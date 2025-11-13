@@ -1,9 +1,25 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Miiproyecto1" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <!-- 1. TEMA BASE PRINCIPAL (Hereda de Material3, usa DayNight para modo oscuro) -->
+    <!-- Definimos los colores para el modo CLARO -->
+    <style name="Theme.Miiproyecto1" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Colores base de la aplicación -->
+        <item name="colorPrimary">@color/inventory_orange</item>
+        <item name="colorPrimaryVariant">@color/login_dark_gray</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/inventory_orange_light</item>
+        <item name="colorSecondaryVariant">@color/inventory_orange_dark</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <!-- Color de la barra de estado -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
     </style>
 
-    <style name="Theme.Miiproyecto1" parent="Base.Theme.Miiproyecto1" />
+    <!-- 2. TEMA SIN BARRA DE ACCIÓN (Para usar en actividades como Login/Home) -->
+    <!-- Hereda *tus* colores y solo quita la barra de acción. -->
+    <style name="Theme.Miiproyecto1.NoActionBar" parent="Theme.Miiproyecto1">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
 </resources>

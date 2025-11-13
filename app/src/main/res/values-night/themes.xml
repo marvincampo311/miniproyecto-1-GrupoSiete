@@ -1,7 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Miiproyecto1" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+
+    <!-- 1. TEMA BASE PRINCIPAL (Hereda de Theme.Miiproyecto1, pero sobrescribe los colores) -->
+    <!-- Definimos los colores para el modo OSCURO -->
+    <style name="Theme.Miiproyecto1" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Colores base de la aplicación (invertidos para el modo oscuro) -->
+        <item name="colorPrimary">@color/inventory_orange_light</item>
+        <item name="colorPrimaryVariant">@color/inventory_dark</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSecondary">@color/inventory_orange</item>
+        <item name="colorSecondaryVariant">@color/login_dark_gray</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Color de la barra de estado -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
     </style>
+
 </resources>

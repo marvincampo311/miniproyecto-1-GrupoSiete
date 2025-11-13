@@ -31,7 +31,7 @@
                 android:layout_height="24dp"
                 android:layout_marginEnd="8dp"
                 android:contentDescription="@string/inventario_logo"
-                android:src="@drawable/ic_inventory_logo" />
+                android:src="@drawable/baseline_inventory_24" />
 
             <!-- Criterio 3: Título -->
             <TextView

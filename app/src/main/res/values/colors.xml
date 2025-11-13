@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Colores base de Material 3 que suelen estar por defecto -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Naranja Principal del Widget (FA8523) - Usado para texto de valor, título y el botón. -->
-    <color name="orange_inventory">#FA8523</color>
-    <!-- Color de fondo semitransparente (CC000000 = 80% negro) que se define en widget_background.xml,
-         pero se mantiene aquí para referencia.
-    <color name="widget_background_color_80">#CC000000</color>
-    -->
+    <!-- Colores personalizados de la aplicación Inventory -->
+    <color name="inventory_dark">#FF1C1F21</color>
+    <color name="login_dark_gray">#FF363B3F</color>
+    <color name="inventory_orange">#FFF96D2E</color>
+    <color name="inventory_orange_light">#FFFCA37D</color>
+    <color name="inventory_orange_dark">#FFC74917</color>
+    <color name="toolbar_dark_gray">#424242</color>
+
+    <!-- COLOR CLAVE para la Toolbar: #424242 -->
+    <color name="home_background_dark">#121212</color>
+    <color name="card_background_light">#FFFFFF</color>
+    <color name="text_primary_dark">#E0E0E0</color>
+
+
+
 </resources>
