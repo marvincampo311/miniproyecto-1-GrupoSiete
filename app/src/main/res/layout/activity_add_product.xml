@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#212121"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
+    <!-- el android:fitSystemWindows="true" sirve para evitar el colapso de la toolbar con la barra de notificacion del cel-->
+
+    <!-- Toolbar superior -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#424242"
+        app:title="Agregar producto"
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="@drawable/baseline_arrow_back_ios_new_24"
+        />
+
+    <!-- Formulario centrado -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="20dp"
+        android:gravity="center_horizontal">
+
+        <!-- Campo: Código producto -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            app:boxBackgroundColor="#212121"
+            app:boxStrokeColor="@android:color/white"
+            app:hintTextColor="@android:color/white"
+            app:boxCornerRadiusTopStart="6dp"
+            app:boxCornerRadiusTopEnd="6dp"
+            app:boxCornerRadiusBottomStart="6dp"
+            app:boxCornerRadiusBottomEnd="6dp"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextCodigo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="number"
+                android:maxLength="4"
+                android:textColor="@android:color/white"
+                android:hint="Código producto"
+                android:textColorHint="@android:color/white"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo: Nombre artículo -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            app:boxBackgroundColor="#212121"
+            app:boxStrokeColor="@android:color/white"
+            app:hintTextColor="@android:color/white"
+            app:boxCornerRadiusTopStart="6dp"
+            app:boxCornerRadiusTopEnd="6dp"
+            app:boxCornerRadiusBottomStart="6dp"
+            app:boxCornerRadiusBottomEnd="6dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextNombre"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:maxLength="40"
+                android:textColor="@android:color/white"
+                android:hint="Nombre artículo"
+                android:textColorHint="@android:color/white"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo: Precio -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            app:boxBackgroundColor="#212121"
+            app:boxStrokeColor="@android:color/white"
+            app:hintTextColor="@android:color/white"
+            app:boxCornerRadiusTopStart="6dp"
+            app:boxCornerRadiusTopEnd="6dp"
+            app:boxCornerRadiusBottomStart="6dp"
+            app:boxCornerRadiusBottomEnd="6dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextPrecio"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="number"
+                android:maxLength="20"
+                android:textColor="@android:color/white"
+                android:hint="Precio"
+                android:textColorHint="@android:color/white"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo: Cantidad -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            app:boxBackgroundColor="#212121"
+            app:boxStrokeColor="@android:color/white"
+            app:hintTextColor="@android:color/white"
+            app:boxCornerRadiusTopStart="6dp"
+            app:boxCornerRadiusTopEnd="6dp"
+            app:boxCornerRadiusBottomStart="6dp"
+            app:boxCornerRadiusBottomEnd="6dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextCantidad"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="number"
+                android:maxLength="4"
+                android:textColor="@android:color/white"
+                android:hint="Cantidad"
+                android:textColorHint="@android:color/white"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Botón Guardar -->
+        <Button
+            android:id="@+id/btnGuardar"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button_background_orange"
+            android:text="Guardar"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:enabled="false"
+            android:alpha="0.5"
+            android:letterSpacing="0.05"
+            android:fontFamily="sans-serif-medium"
+            />
+    </LinearLayout>
+</LinearLayout>

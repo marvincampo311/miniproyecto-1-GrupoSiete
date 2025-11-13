@@ -30,6 +30,11 @@ class HomeActivity : AppCompatActivity() {
         setupRecyclerView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        setupRecyclerView()
+    }
+
     /**
      * Criterio 3.1: Configura la Toolbar con el título y el botón de perfil.
      */
@@ -54,10 +59,9 @@ class HomeActivity : AppCompatActivity() {
         binding.fabAdd.setOnClickListener {
             Toast.makeText(this, "Agregar Producto presionado. (Criterio 3.3)", Toast.LENGTH_SHORT).show()
 
-            // Aquí puedes lanzar la actividad para agregar un producto (si la tuvieras)
-            // Por ejemplo:
-            // val intent = Intent(this, AddProductActivity::class.java)
-            // startActivity(intent)
+
+            val intent = Intent(this, AddProductActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -65,31 +69,17 @@ class HomeActivity : AppCompatActivity() {
      * Criterios 3.0 y 3.2: Configura el RecyclerView con la lista de productos.
      */
     private fun setupRecyclerView() {
-        // Simulación de datos de productos (CRITERIO 3.2)
-        val productList = listOf(
-            Product(id = 101, name = "Laptop Gamer 15'", price = 4_500_000.0),
-            Product(id = 102, name = "Monitor 4K", price = 1_200_000.0),
-            Product(id = 103, name = "Mouse Inalámbrico", price = 85_000.0),
-            Product(id = 104, name = "Teclado Mecánico", price = 320_000.0),
-            Product(id = 105, name = "Webcam HD", price = 150_000.0),
-            Product(id = 106, name = "Disco Duro Externo 2TB", price = 480_000.0),
-            Product(id = 107, name = "Silla Ergonómica", price = 850_000.0)
-            // ¡Estos son los 7 ítems de la lista que te pedí en el CRITERIO 3.2!
-        )
-
-        // Inicializa el adaptador
-        val adapter = ProductAdapter(productList)
-
-        // Configura el listener de clic (parte del Criterio 3.2 y 8)
-        adapter.onItemClick = { product ->
-            Toast.makeText(this, "Click en: ${product.name}", Toast.LENGTH_SHORT).show()
-            // Aquí iría el código para abrir la pantalla de Edición o Detalle
-        }
-
-        // Aplica el Layout Manager (CRITERIO 3.0 - lista vertical)
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-
-        // Asigna el adaptador al RecyclerView
-        binding.recyclerView.adapter = adapter
+        Thread {
+            val db = AppDatabase.getDatabase(applicationContext)
+            val productList = db.productDao().getAllProducts()
+            runOnUiThread {
+                val adapter = ProductAdapter(productList)
+                adapter.onItemClick = { product ->
+                    Toast.makeText(this, "Click en: ${product.name}", Toast.LENGTH_SHORT).show()
+                }
+                binding.recyclerView.layoutManager = LinearLayoutManager(this)
+                binding.recyclerView.adapter = adapter
+            }
+        }.start()
     }
 }

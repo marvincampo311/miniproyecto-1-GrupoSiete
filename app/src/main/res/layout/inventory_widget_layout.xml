@@ -120,7 +120,6 @@
         android:background="@drawable/button_background_orange"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
         android:minHeight="40dp"
         android:paddingStart="16dp"
         android:paddingTop="8dp"
@@ -128,7 +127,10 @@
         android:paddingBottom="8dp"
         android:text="@string/gestionar_inventario"
         android:textColor="@android:color/white"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        />
+        <!--android:foreground="attr/selectableItemBackground"-->
+
     <!-- Cambiado a wrap_content y centrado para evitar ser "demasiado ancho". -->
 
 </LinearLayout>
