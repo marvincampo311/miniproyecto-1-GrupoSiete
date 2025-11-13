@@ -52,7 +52,8 @@ class HomeActivity : AppCompatActivity() {
      */
     private fun setupFab() {
         binding.fabAdd.setOnClickListener {
-            Toast.makeText(this, "Agregar Producto presionado. (Criterio 3.3)", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Agregar Producto presionado. (Criterio 3.3)", Toast.LENGTH_SHORT)
+                .show()
 
             // Aquí puedes lanzar la actividad para agregar un producto (si la tuvieras)
             // Por ejemplo:
@@ -91,5 +92,6 @@ class HomeActivity : AppCompatActivity() {
 
         // Asigna el adaptador al RecyclerView
         binding.recyclerView.adapter = adapter
+
     }
 }
