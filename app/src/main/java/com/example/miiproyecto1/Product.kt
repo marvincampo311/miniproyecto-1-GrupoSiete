@@ -1,10 +1,18 @@
 package com.example.miiproyecto1
 
-/**
- * Clase de datos que representa un producto en el inventario.
- */
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+
+
+@Entity(tableName = "products")
 data class Product(
-    val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+
+    val codigo: String,
     val name: String,
-    val price: Double
+    val price: Double,
+    val cantidad: Int
+
+
 )
