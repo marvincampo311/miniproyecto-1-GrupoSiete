@@ -34,10 +34,20 @@
             android:theme="@style/Theme.Miiproyecto1.NoActionBar"
             />
 
-        <activity android:name=".AddProductActivity"
+        <activity
+            android:name=".AddProductActivity"
             android:exported="true"
-            android:theme="@style/Theme.Miiproyecto1.NoActionBar"
-            />
+            android:theme="@style/Theme.Miiproyecto1.NoActionBar" />
+
+        <activity
+            android:name=".ProductDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Miiproyecto1.NoActionBar" />
+
+        <activity
+            android:name=".EditProductActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Miiproyecto1.NoActionBar" />
 
 
         <!-- PROVEEDOR DE WIDGET (HU 1.0) -->

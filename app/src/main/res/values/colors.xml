@@ -21,6 +21,7 @@
     <color name="home_background_dark">#121212</color>
     <color name="card_background_light">#FFFFFF</color>
     <color name="text_primary_dark">#E0E0E0</color>
+    <color name="detail_background">#CC000000</color>
 
 
 

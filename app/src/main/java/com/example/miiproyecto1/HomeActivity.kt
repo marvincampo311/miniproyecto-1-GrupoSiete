@@ -45,10 +45,12 @@ class HomeActivity : AppCompatActivity() {
         // Asigna el título (CRITERIO 3.1)
         supportActionBar?.title = "Inventario"
 
-        // Configura el botón de perfil (Criterio 3.1)
+        // Configura el botón para regresar al Login (MainActivity)
         binding.imageProfile.setOnClickListener {
-            Toast.makeText(this, "Perfil presionado. (Criterio 3.1)", Toast.LENGTH_SHORT).show()
-            // Aquí iría el código para abrir la pantalla de Perfil
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            finish()
         }
     }
 
@@ -75,7 +77,9 @@ class HomeActivity : AppCompatActivity() {
             runOnUiThread {
                 val adapter = ProductAdapter(productList)
                 adapter.onItemClick = { product ->
-                    Toast.makeText(this, "Click en: ${product.name}", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ProductDetailActivity::class.java)
+                    intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT_ID, product.id)
+                    startActivity(intent)
                 }
                 binding.recyclerView.layoutManager = LinearLayoutManager(this)
                 binding.recyclerView.adapter = adapter
