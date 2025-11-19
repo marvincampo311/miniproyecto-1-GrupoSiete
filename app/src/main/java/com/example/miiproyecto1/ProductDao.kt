@@ -14,6 +14,9 @@ interface ProductDao {
     @Query("SELECT * FROM products ORDER BY id DESC")
     fun getAllProducts(): List<Product>
 
+    @Query("SELECT * FROM products WHERE id = :productId LIMIT 1")
+    fun getProductById(productId: Int): Product?
+
     @Delete
     fun deleteProduct(product: Product)
 
