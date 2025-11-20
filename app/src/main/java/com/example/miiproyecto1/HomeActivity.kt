@@ -3,6 +3,7 @@ package com.example.miiproyecto1
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,10 +46,12 @@ class HomeActivity : AppCompatActivity() {
         // Asigna el título (CRITERIO 3.1)
         supportActionBar?.title = "Inventario"
 
-        // Configura el botón de perfil (Criterio 3.1)
+        // Configura el botón para regresar al Login (MainActivity)
         binding.imageProfile.setOnClickListener {
-            Toast.makeText(this, "Perfil presionado. (Criterio 3.1)", Toast.LENGTH_SHORT).show()
-            // Aquí iría el código para abrir la pantalla de Perfil
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            finish()
         }
     }
 
@@ -69,13 +72,21 @@ class HomeActivity : AppCompatActivity() {
      * Criterios 3.0 y 3.2: Configura el RecyclerView con la lista de productos.
      */
     private fun setupRecyclerView() {
+        binding.loadingIndicator.visibility = View.VISIBLE
+        binding.recyclerView.visibility = View.GONE
+
         Thread {
             val db = AppDatabase.getDatabase(applicationContext)
             val productList = db.productDao().getAllProducts()
             runOnUiThread {
+                binding.loadingIndicator.visibility = View.GONE
+                binding.recyclerView.visibility = View.VISIBLE
+
                 val adapter = ProductAdapter(productList)
                 adapter.onItemClick = { product ->
-                    Toast.makeText(this, "Click en: ${product.name}", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ProductDetailActivity::class.java)
+                    intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT_ID, product.id)
+                    startActivity(intent)
                 }
                 binding.recyclerView.layoutManager = LinearLayoutManager(this)
                 binding.recyclerView.adapter = adapter
