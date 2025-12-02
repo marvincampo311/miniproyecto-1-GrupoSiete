@@ -1,27 +1,57 @@
-package com.example.miiproyecto1
+package com.example.miiproyecto1.ui.fragments
 
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.miiproyecto1.databinding.ActivityEditProductBinding
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.example.miiproyecto1.databinding.FragmentEditProductBinding
+import com.example.miiproyecto1.data.local.AppDatabase
+import com.example.miiproyecto1.data.local.Product
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class EditProductActivity : AppCompatActivity() {
+class EditProductFragment : Fragment() {
 
-    private lateinit var binding: ActivityEditProductBinding
+    private lateinit var binding: FragmentEditProductBinding
     private var productId: Int = -1
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityEditProductBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    companion object {
+        const val EXTRA_PRODUCT_ID = "extra_product_id"
 
-        productId = intent.getIntExtra(ProductDetailActivity.EXTRA_PRODUCT_ID, -1)
+        fun newInstance(productId: Int): EditProductFragment {
+            return EditProductFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(EXTRA_PRODUCT_ID, productId)
+                }
+            }
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentEditProductBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        productId = arguments?.getInt(EXTRA_PRODUCT_ID, -1) ?: -1
+
         if (productId == -1) {
-            Toast.makeText(this, "Producto no encontrado", Toast.LENGTH_SHORT).show()
-            finish()
+            Toast.makeText(requireContext(), "Producto no encontrado", Toast.LENGTH_SHORT).show()
+            requireActivity().onBackPressed()
             return
         }
 
@@ -29,17 +59,15 @@ class EditProductActivity : AppCompatActivity() {
         setupFilters()
         setupWatcher()
         setupSaveButton()
-    }
-
-    override fun onResume() {
-        super.onResume()
         loadProduct()
     }
 
     private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbar.setNavigationOnClickListener { finish() }
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.setNavigationOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 
     private fun setupFilters() {
@@ -87,23 +115,31 @@ class EditProductActivity : AppCompatActivity() {
                 cantidad = cantidad
             )
 
-            Thread {
-                AppDatabase.getDatabase(applicationContext).productDao().updateProduct(updatedProduct)
-                runOnUiThread {
-                    Toast.makeText(this, "Producto actualizado", Toast.LENGTH_SHORT).show()
-                    finish()
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    withContext(Dispatchers.IO) {
+                        AppDatabase.getDatabase(requireContext()).productDao().updateProduct(updatedProduct)
+                    }
+
+                    Toast.makeText(requireContext(), "Producto actualizado", Toast.LENGTH_SHORT).show()
+                    requireActivity().onBackPressed()
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Error al guardar: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
-            }.start()
+            }
         }
     }
 
     private fun loadProduct() {
-        Thread {
-            val product = AppDatabase.getDatabase(applicationContext).productDao().getProductById(productId)
-            runOnUiThread {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val product = withContext(Dispatchers.IO) {
+                    AppDatabase.getDatabase(requireContext()).productDao().getProductById(productId)
+                }
+
                 if (product == null) {
-                    Toast.makeText(this, "El producto ya no existe", Toast.LENGTH_SHORT).show()
-                    finish()
+                    Toast.makeText(requireContext(), "El producto ya no existe", Toast.LENGTH_SHORT).show()
+                    requireActivity().onBackPressed()
                 } else {
                     binding.editTextCodigo.setText(product.codigo)
                     binding.editTextNombre.setText(product.name)
@@ -112,10 +148,9 @@ class EditProductActivity : AppCompatActivity() {
                     binding.btnGuardar.isEnabled = true
                     binding.btnGuardar.alpha = 1f
                 }
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
-        }.start()
+        }
     }
 }
-
-
-
