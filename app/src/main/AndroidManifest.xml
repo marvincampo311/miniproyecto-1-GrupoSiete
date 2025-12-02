@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
     <application
+        android:name=".InventoryApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -34,35 +35,18 @@
             android:theme="@style/Theme.Miiproyecto1.NoActionBar"
             />
 
-        <activity
-            android:name=".AddProductActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Miiproyecto1.NoActionBar" />
-
-        <activity
-            android:name=".ProductDetailActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Miiproyecto1.NoActionBar" />
-
-        <activity
-            android:name=".EditProductActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Miiproyecto1.NoActionBar" />
-
-
-        <!-- PROVEEDOR DE WIDGET (HU 1.0) -->
+        !-- PROVEEDOR DE WIDGET -->
         <receiver
             android:name=".InventoryWidgetProvider"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/app_widget_info" />
         </receiver>
+
     </application>
 
 </manifest>

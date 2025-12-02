@@ -8,34 +8,69 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import android.util.Log
-import com.example.miiproyecto1.R
+import java.text.NumberFormat
+import java.util.Locale
+import com.example.miiproyecto1.data.local.AppDatabase
 
+/**
+ * INVENTORY WIDGET PROVIDER - WIDGET DE INVENTARIO
+ *
+ * Mantiene EXACTAMENTE LA MISMA LÓGICA que el widget original
+ * Solo cambia: usa SharedPreferences en lugar de variable estática
+ */
 class InventoryWidgetProvider : AppWidgetProvider() {
 
     companion object {
         private const val TOGGLE_VISIBILITY_ACTION = "com.example.miiproyecto1.TOGGLE_VISIBILITY"
-        private const val MANAGE_INVENTORY_ACTION = "com.example.miiproyecto1.MainActivity"
-        private var isInventoryVisible = false
+        private const val MANAGE_INVENTORY_ACTION = "com.example.miiproyecto1.MANAGE_INVENTORY"
+        private const val WIDGET_PREFS = "widget_prefs"
+        private const val IS_INVENTORY_VISIBLE = "isInventoryVisible"
         private const val HIDDEN_VALUE = "$ ****"
     }
 
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
         appWidgetIds.forEach { appWidgetId ->
-            Thread {
-                val db = AppDatabase.getDatabase(context.applicationContext)
-                val productList = db.productDao().getAllProducts()
+            updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
+    }
 
+    /**
+     * UPDATE APP WIDGET - Actualiza un widget
+     *
+     * ✅ LÓGICA IDÉNTICA AL ORIGINAL
+     */
+    private fun updateAppWidget(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int
+    ) {
+        Thread {
+            try {
+                // ✅ Obtener productos
+                val db = AppDatabase.getDatabase(context.applicationContext)
+                val productList = db.productDao().getAllProductsSync()  // ✅ Retorna List
+
+                // ✅ Calcular suma
                 var totalSum = 0.0
                 for (product in productList) {
                     totalSum += product.price * product.cantidad
                 }
 
-                val locale = java.util.Locale("es", "CO")
-                val currencyFormatter = java.text.NumberFormat.getCurrencyInstance(locale)
+                // ✅ Formatear moneda
+                val locale = Locale("es", "CO")
+                val currencyFormatter = NumberFormat.getCurrencyInstance(locale)
                 val formattedTotal = currencyFormatter.format(totalSum)
 
+                // ✅ Obtener visibilidad de SharedPreferences
+                val sharedPref = context.getSharedPreferences(WIDGET_PREFS, Context.MODE_PRIVATE)
+                val isInventoryVisible = sharedPref.getBoolean(IS_INVENTORY_VISIBLE, false)
                 val valueToShow = if (isInventoryVisible) formattedTotal else HIDDEN_VALUE
 
+                // ✅ Crear vistas
                 val views = RemoteViews(context.packageName, R.layout.inventory_widget_layout)
                 views.setTextViewText(R.id.inventory_value, valueToShow)
                 views.setImageViewResource(
@@ -43,6 +78,7 @@ class InventoryWidgetProvider : AppWidgetProvider() {
                     if (isInventoryVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility_on
                 )
 
+                // ✅ Click en ojo (toggle)
                 val toggleVisibilityIntent = Intent(context, InventoryWidgetProvider::class.java).apply {
                     action = TOGGLE_VISIBILITY_ACTION
                     putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
@@ -55,8 +91,10 @@ class InventoryWidgetProvider : AppWidgetProvider() {
                 )
                 views.setOnClickPendingIntent(R.id.toggle_visibility_icon, togglePendingIntent)
 
-                val manageIntent = Intent(context, MainActivity::class.java)
-                manageIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                // ✅ Click en botón gestionar
+                val manageIntent = Intent(context, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
                 val managePendingIntent = PendingIntent.getActivity(
                     context,
                     0,
@@ -64,24 +102,16 @@ class InventoryWidgetProvider : AppWidgetProvider() {
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
                 views.setOnClickPendingIntent(R.id.manage_inventory_button, managePendingIntent)
-
                 views.setOnClickPendingIntent(R.id.settings_icon, managePendingIntent)
 
+                // ✅ Actualizar widget
                 appWidgetManager.updateAppWidget(appWidgetId, views)
-            }.start()
-        }
-    }
 
-    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
-        Log.d("Widget", "Widget eliminado")
-    }
-
-    override fun onEnabled(context: Context) {
-        Log.d("Widget", "Widget habilitado")
-    }
-
-    override fun onDisabled(context: Context) {
-        Log.d("Widget", "Widget deshabilitado")
+            } catch (e: Exception) {
+                Log.e("InventoryWidget", "Error actualizando widget", e)
+                e.printStackTrace()
+            }
+        }.start()
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -94,25 +124,34 @@ class InventoryWidgetProvider : AppWidgetProvider() {
 
         when (intent.action) {
             TOGGLE_VISIBILITY_ACTION -> {
-                isInventoryVisible = !isInventoryVisible
+                val sharedPref = context.getSharedPreferences(WIDGET_PREFS, Context.MODE_PRIVATE)
+                val currentVisibility = sharedPref.getBoolean(IS_INVENTORY_VISIBLE, false)
+                val newVisibility = !currentVisibility
+
+                sharedPref.edit().putBoolean(IS_INVENTORY_VISIBLE, newVisibility).apply()
+
+                Log.d("InventoryWidget", "Visibilidad toggled: $newVisibility")
+
                 if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                     val appWidgetManager = AppWidgetManager.getInstance(context)
                     updateAppWidget(context, appWidgetManager, appWidgetId)
                 }
             }
-            MANAGE_INVENTORY_ACTION -> {
-                val loginIntent = Intent(context, MainActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                }
-                context.startActivity(loginIntent)
-            }
         }
     }
 
-    @SuppressLint("RemoteViewLayout")
-    private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-        // Esta función puede contener solo actualizaciones para eventos específicos si lo deseas,
-        // o bien puedes llamar directamente a onUpdate para refrescar
-        onUpdate(context, appWidgetManager, intArrayOf(appWidgetId))
+    override fun onEnabled(context: Context) {
+        Log.d("InventoryWidget", "Widget habilitado")
+        super.onEnabled(context)
+    }
+
+    override fun onDisabled(context: Context) {
+        Log.d("InventoryWidget", "Widget deshabilitado")
+        super.onDisabled(context)
+    }
+
+    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        Log.d("InventoryWidget", "Widget eliminado")
+        super.onDeleted(context, appWidgetIds)
     }
 }

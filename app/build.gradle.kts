@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt") // Enables Kotlin Annotation Processing
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -76,6 +77,17 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0") // Kotlin standard library
 
+    // ==================== HILT (INYECCIÓN DE DEPENDENCIAS) ====================
+    // ✅ Core Hilt
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-compiler:2.48")
+    // ✅ Hilt para Navigation
+    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.6")
+
+
+
     // Room Database (Persistence)
     implementation("androidx.concurrent:concurrent-futures:1.1.0") // Concurrency utilities
     implementation("com.google.guava:guava:31.0.1-android") // Utility library collection
@@ -83,4 +95,6 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.30") // Duplicate (kept as requested)
     implementation("androidx.room:room-runtime:2.6.1") // Room runtime
     kapt("androidx.room:room-compiler:2.6.1") // Room annotation processor
+    implementation("androidx.room:room-ktx:2.6.1") // ✅ AGREGA ESTA LÍNEA
+
 }
