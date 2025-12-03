@@ -23,6 +23,7 @@ import java.text.NumberFormat
 import java.util.Locale
 import androidx.navigation.fragment.findNavController
 import com.example.miiproyecto1.R
+import com.example.miiproyecto1.ui.viewmodel.HomeViewModel
 
 /**
  * PRODUCT DETAIL FRAGMENT - VER DETALLES DEL PRODUCTO
@@ -36,6 +37,9 @@ class ProductDetailFragment : Fragment() {
     private var productId: Int = -1
     private var currentProduct: Product? = null
     private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
+
+    // ✅ Usaremos HomeViewModel para eliminar
+    private lateinit var homeViewModel: HomeViewModel
 
     companion object {
         const val EXTRA_PRODUCT_ID = "extra_product_id"
@@ -61,71 +65,57 @@ class ProductDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Obtener el ID desde arguments (Bundle)
         productId = arguments?.getInt(EXTRA_PRODUCT_ID, -1) ?: -1
-
         if (productId == -1) {
             Toast.makeText(requireContext(), "Producto no encontrado", Toast.LENGTH_SHORT).show()
-            requireActivity().onBackPressed()
+            findNavController().popBackStack()
             return
         }
+
+        // ✅ Inicializar HomeViewModel reutilizando la misma BD
+        val db = AppDatabase.getDatabase(requireContext())
+        homeViewModel = HomeViewModel(db)
 
         setupToolbar()
         setupListeners()
         loadProduct()
     }
 
-    /**
-     * Configurar Toolbar
-     */
     private fun setupToolbar() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
         (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener {
-            requireActivity().onBackPressed()
+            findNavController().popBackStack()
         }
     }
 
-    /**
-     * Configurar listeners de botones
-     */
-    /**
-     * Configurar listeners de botones
-     * ✅ Ahora usa Navigation en lugar de Intent
-     */
-    /**
-     * Configurar listeners de botones
-     */
     private fun setupListeners() {
         binding.btnDelete.setOnClickListener { showDeleteConfirmation() }
         binding.fabEdit.setOnClickListener {
             if (productId != -1) {
-                // Navega a EditProductFragment con Bundle
                 val bundle = Bundle().apply {
-                    putInt("extra_product_id", productId)
+                    putInt(EXTRA_PRODUCT_ID, productId)
                 }
                 findNavController().navigate(R.id.editProductFragment, bundle)
             }
         }
     }
 
-
-
-    /**
-     * Cargar el producto desde la BD con Coroutines
-     */
+    // ✅ Carga sigue igual, usando Room + corrutinas desde el Fragment
     private fun loadProduct() {
         binding.btnDelete.isEnabled = false
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val product = withContext(Dispatchers.IO) {
-                    AppDatabase.getDatabase(requireContext()).productDao().getProductById(productId)
+                    AppDatabase.getDatabase(requireContext())
+                        .productDao()
+                        .getProductById(productId)
                 }
 
                 if (product == null) {
                     Toast.makeText(requireContext(), "El producto ya no existe", Toast.LENGTH_SHORT).show()
-                    requireActivity().onBackPressed()
+                    findNavController().popBackStack()
                 } else {
                     currentProduct = product
                     bindProduct(product)
@@ -137,9 +127,6 @@ class ProductDetailFragment : Fragment() {
         }
     }
 
-    /**
-     * Mostrar los datos del producto en la UI
-     */
     private fun bindProduct(product: Product) {
         binding.toolbar.title = product.name
         binding.productName.text = product.name
@@ -149,9 +136,6 @@ class ProductDetailFragment : Fragment() {
         binding.productTotal.text = currencyFormat.format(total)
     }
 
-    /**
-     * Mostrar diálogo de confirmación antes de eliminar
-     */
     private fun showDeleteConfirmation() {
         AlertDialog.Builder(requireContext())
             .setTitle("Confirmar eliminación")
@@ -164,26 +148,14 @@ class ProductDetailFragment : Fragment() {
             .show()
     }
 
-    /**
-     * Eliminar el producto de la BD con Coroutines
-     */
+    // ✅ Ahora delega la eliminación al ViewModel
     private fun deleteProduct() {
         val product = currentProduct ?: return
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    AppDatabase.getDatabase(requireContext()).productDao().deleteProduct(product)
-                }
+        // Lógica en el ViewModel (usa corrutinas y Room)
+        homeViewModel.deleteProduct(product)
 
-                Toast.makeText(requireContext(), "Producto eliminado", Toast.LENGTH_SHORT).show()
-                val intent = Intent(requireContext(), HomeActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                startActivity(intent)
-                requireActivity().finish()
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Error al eliminar: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
+        Toast.makeText(requireContext(), "Producto eliminado", Toast.LENGTH_SHORT).show()
+        findNavController().popBackStack()   // vuelve al listado sin recrear HomeActivity
     }
 }

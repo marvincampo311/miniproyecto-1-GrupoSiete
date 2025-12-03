@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "805672915656",
+    "project_id": "bdminoproyecto",
+    "storage_bucket": "bdminoproyecto.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805672915656:android:2cf5fd71a8642ba528cbfd",
+        "android_client_info": {
+          "package_name": "com.example.miiproyecto1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJ3H-5P8tONLJu4RSbkNFbDmGsnzxxNOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

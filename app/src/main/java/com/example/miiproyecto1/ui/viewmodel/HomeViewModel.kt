@@ -28,6 +28,19 @@ class HomeViewModel(
             _loading.postValue(false)
         }
     }
+
+    // ✅ NUEVO: eliminar producto
+    fun deleteProduct(product: Product) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                db.productDao().deleteProduct(product)
+                val list = db.productDao().getAllProductsSync()
+                _products.postValue(list)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 }
 
 // Factory para el ViewModel
