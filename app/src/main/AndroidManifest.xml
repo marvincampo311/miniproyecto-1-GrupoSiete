@@ -35,7 +35,7 @@
             android:theme="@style/Theme.Miiproyecto1.NoActionBar"
             />
 
-        !-- PROVEEDOR DE WIDGET -->
+        <!-- PROVEEDOR DE WIDGET -->
         <receiver
             android:name=".InventoryWidgetProvider"
             android:exported="true">
