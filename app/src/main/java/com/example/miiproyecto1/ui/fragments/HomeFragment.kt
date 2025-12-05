@@ -26,11 +26,16 @@ import com.example.miiproyecto1.ui.viewmodel.HomeViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import dagger.hilt.android.AndroidEntryPoint
+import androidx.fragment.app.viewModels
 
+
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     // Compartido con la Activity (MainActivity / HomeActivity)
-    private val authViewModel: AuthViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by viewModels()
+
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: HomeViewModel
@@ -64,15 +69,15 @@ class HomeFragment : Fragment() {
         (requireActivity() as AppCompatActivity).supportActionBar?.title = "Inventario"
 
         binding.imageProfile.setOnClickListener {
-            // Logout Firebase
+            // Logout Firebase (asíncrono)
             authViewModel.logout()
 
-            // Volver a la pantalla de login (MainActivity)
+            // Limpiar completamente el stack y ir a Login
             val intent = Intent(requireContext(), MainActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK)
             }
             startActivity(intent)
-            requireActivity().finish()
         }
     }
 
