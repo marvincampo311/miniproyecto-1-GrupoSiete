@@ -14,49 +14,57 @@ class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
+    // Para mostrar / ocultar loading en la UI
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
 
+    // Indica que hubo login/registro exitoso
     private val _loginSuccess = MutableLiveData<Boolean>()
     val loginSuccess: LiveData<Boolean> = _loginSuccess
 
+    // Mensaje de error crudo desde Firebase (MainActivity ya lo traduce a Toast adecuado)
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
     fun login(email: String, password: String) {
         _loading.value = true
         _error.value = null
+        _loginSuccess.value = false
 
         viewModelScope.launch {
             val result = authRepository.login(email, password)
             _loading.value = false
-            result.onSuccess {
-                _loginSuccess.value = true
-            }.onFailure {
-                _error.value = it.message ?: "Error al iniciar sesión"
-            }
+            result
+                .onSuccess {
+                    _loginSuccess.value = true
+                }
+                .onFailure { e ->
+                    _error.value = e.message ?: "Error al iniciar sesión"
+                }
         }
     }
 
     fun register(email: String, password: String) {
         _loading.value = true
         _error.value = null
+        _loginSuccess.value = false
 
         viewModelScope.launch {
             val result = authRepository.register(email, password)
             _loading.value = false
-            result.onSuccess {
-                _loginSuccess.value = true
-            }.onFailure {
-                _error.value = it.message ?: "Error al registrarse"
-            }
+            result
+                .onSuccess {
+                    _loginSuccess.value = true
+                }
+                .onFailure { e ->
+                    _error.value = e.message ?: "Error al registrarse"
+                }
         }
     }
 
-    fun isLoggedIn(): Boolean = authRepository.isLoggedIn()
+    fun isLoggedIn(): Boolean = authRepository.isLoggedIn()   // usado por MainActivity [web:55]
 
-     fun logout() {
-        // Simplemente llama a la función suspendida del repositorio
+    fun logout() {
         authRepository.logout()
     }
 }
