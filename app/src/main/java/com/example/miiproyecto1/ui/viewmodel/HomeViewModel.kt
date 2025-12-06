@@ -9,9 +9,14 @@ import com.example.miiproyecto1.data.local.AppDatabase
 import com.example.miiproyecto1.data.local.Product
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import com.example.miiproyecto1.data.repository.FirestoreProductRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 
-class HomeViewModel(
-    private val db: AppDatabase
+
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val repo: FirestoreProductRepository
 ) : ViewModel() {
 
     private val _products = MutableLiveData<List<Product>>()
@@ -20,36 +25,31 @@ class HomeViewModel(
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
 
-    fun loadProducts() {
+    fun observeProducts() {
         _loading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
-            val list = db.productDao().getAllProductsSync()
-            _products.postValue(list)
-            _loading.postValue(false)
+        viewModelScope.launch {
+            repo.getAllProductsFlow().collect { list ->
+                _products.value = list
+                _loading.value = false
+            }
         }
     }
 
     // ✅ NUEVO: eliminar producto
-    fun deleteProduct(product: Product) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                db.productDao().deleteProduct(product)
-                val list = db.productDao().getAllProductsSync()
-                _products.postValue(list)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+    fun deleteProduct(productId: String) {
+        viewModelScope.launch{
+            repo.deleteProduct(productId)
         }
+
     }
 }
 
 // Factory para el ViewModel
-class HomeViewModelFactory(private val database: AppDatabase) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return HomeViewModel(database) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
+//class HomeViewModelFactory(private val database: AppDatabase) : ViewModelProvider.Factory {
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
+//            @Suppress("UNCHECKED_CAST")
+//            return HomeViewModel(database) as T
+//        }
+//        throw IllegalArgumentException("Unknown ViewModel class")
+//    }

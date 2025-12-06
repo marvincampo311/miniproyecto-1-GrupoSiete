@@ -14,11 +14,17 @@ import com.example.miiproyecto1.data.local.AppDatabase
 import com.example.miiproyecto1.data.local.Product
 import com.example.miiproyecto1.databinding.FragmentAddProductBinding
 import com.example.miiproyecto1.ui.viewmodel.AddProductViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import androidx.fragment.app.viewModels
 
+
+
+@AndroidEntryPoint
 class AddProductFragment : Fragment() {
 
     private lateinit var binding: FragmentAddProductBinding
-    private lateinit var viewModel: AddProductViewModel
+    private val viewModel: AddProductViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,8 +39,8 @@ class AddProductFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // ✅ SIN FACTORY - Directo y simple
-        val database = AppDatabase.getDatabase(requireContext())
-        viewModel = AddProductViewModel(database)
+//        val database = AppDatabase.getDatabase(requireContext())
+//        viewModel = AddProductViewModel(database)
 
         setupValidationWatcher()
         setupSaveButton()
