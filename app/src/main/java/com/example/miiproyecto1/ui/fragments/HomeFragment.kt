@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -19,13 +20,22 @@ import com.example.miiproyecto1.R
 import com.example.miiproyecto1.data.local.AppDatabase
 import com.example.miiproyecto1.data.local.Product
 import com.example.miiproyecto1.databinding.FragmentHomeBinding
+import com.example.miiproyecto1.ui.viewmodel.AuthViewModel
 import com.example.miiproyecto1.ui.viewmodel.HomeViewModel
 import com.example.miiproyecto1.ui.viewmodel.HomeViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import dagger.hilt.android.AndroidEntryPoint
+import androidx.fragment.app.viewModels
 
+
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
+
+    // Compartido con la Activity (MainActivity / HomeActivity)
+    private val authViewModel: AuthViewModel by viewModels()
+
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: HomeViewModel
@@ -59,10 +69,15 @@ class HomeFragment : Fragment() {
         (requireActivity() as AppCompatActivity).supportActionBar?.title = "Inventario"
 
         binding.imageProfile.setOnClickListener {
-            val intent = Intent(requireContext(), MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            // Logout Firebase (asíncrono)
+            authViewModel.logout()
+
+            // Limpiar completamente el stack y ir a Login
+            val intent = Intent(requireContext(), MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
             startActivity(intent)
-            requireActivity().finish()
         }
     }
 
@@ -79,7 +94,10 @@ class HomeFragment : Fragment() {
             val bundle = Bundle().apply {
                 putInt("extra_product_id", product.id)
             }
-            findNavController().navigate(R.id.action_homeFragment_to_productDetailFragment, bundle)
+            findNavController().navigate(
+                R.id.action_homeFragment_to_productDetailFragment,
+                bundle
+            )
         }
 
         adapter.onDeleteClick = { product ->
@@ -92,8 +110,10 @@ class HomeFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-            binding.loadingIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
-            binding.recyclerView.visibility = if (isLoading) View.GONE else View.VISIBLE
+            binding.loadingIndicator.visibility =
+                if (isLoading) View.VISIBLE else View.GONE
+            binding.recyclerView.visibility =
+                if (isLoading) View.GONE else View.VISIBLE
         }
 
         viewModel.products.observe(viewLifecycleOwner) { products ->
@@ -128,7 +148,11 @@ class HomeFragment : Fragment() {
                 adapter.removeProduct(product)
                 Toast.makeText(requireContext(), "Producto eliminado", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Error al eliminar: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Error al eliminar: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
                 e.printStackTrace()
             }
         }

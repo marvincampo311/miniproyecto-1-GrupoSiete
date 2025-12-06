@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt") // Enables Kotlin Annotation Processing
     id("com.google.dagger.hilt.android")
+    //firebase
+
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -75,16 +78,19 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0") // Kotlin standard library
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.0") // Kotlin standard library
 
     // ==================== HILT (INYECCIÓN DE DEPENDENCIAS) ====================
     // ✅ Core Hilt
     implementation("com.google.dagger:hilt-android:2.48")
     kapt("com.google.dagger:hilt-compiler:2.48")
     // ✅ Hilt para Navigation
-    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-fragment:1.1.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.6")
+
+    // Source - https://stackoverflow.com/a
+    implementation("androidx.navigation:navigation-compose:2.5.3")
 
 
 
@@ -96,5 +102,13 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1") // Room runtime
     kapt("androidx.room:room-compiler:2.6.1") // Room annotation processor
     implementation("androidx.room:room-ktx:2.6.1") // ✅ AGREGA ESTA LÍNEA
+
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
+    implementation("com.google.firebase:firebase-firestore:26.0.2")
 
 }
