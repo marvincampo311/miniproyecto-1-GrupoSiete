@@ -13,6 +13,7 @@ import javax.inject.Singleton
 import com.example.miiproyecto1.data.repository.FirestoreProductRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.example.miiproyecto1.data.repository.SyncProductsUseCase
 
 
 /**
@@ -88,4 +89,14 @@ object DatabaseModule {
         auth: FirebaseAuth
     ): FirestoreProductRepository =
         FirestoreProductRepository(firestore, auth)
+
+    //sincronizacion firebase -> room
+    @Singleton
+    @Provides
+    fun provideSyncProductsUseCase(
+        appDatabase: AppDatabase,
+        firestoreProductRepository: FirestoreProductRepository
+    ): SyncProductsUseCase {
+        return SyncProductsUseCase(appDatabase, firestoreProductRepository)
+    }
 }

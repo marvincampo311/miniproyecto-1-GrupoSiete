@@ -65,6 +65,11 @@ class HomeFragment : Fragment() {
         observeViewModel()
 
         viewModel.observeProducts()
+
+        //sincronizacion firebase - room
+
+        viewModel.syncToLocalForWidget()
+
     }
 
     private fun setupToolbar() {

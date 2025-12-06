@@ -27,7 +27,7 @@ class ProductAdapter(val productList: MutableList<Product>) :
 
         fun bind(product: Product) {
             binding.productName.text = product.name
-            binding.productId.text = "ID: ${product.id}"
+            binding.productId.text = "ID: ${product.codigo}"
 
             val format = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
             binding.productPrice.text = format.format(product.price)

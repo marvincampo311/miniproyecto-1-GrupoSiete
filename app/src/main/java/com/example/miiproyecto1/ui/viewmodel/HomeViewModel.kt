@@ -12,11 +12,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.miiproyecto1.data.repository.FirestoreProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import com.example.miiproyecto1.data.repository.SyncProductsUseCase
 
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repo: FirestoreProductRepository
+    private val repo: FirestoreProductRepository,
+    private val syncUseCase: SyncProductsUseCase
 ) : ViewModel() {
 
     private val _products = MutableLiveData<List<Product>>()
@@ -42,6 +44,20 @@ class HomeViewModel @Inject constructor(
         }
 
     }
+
+
+    //sincronizacion firebase->room
+    fun syncToLocalForWidget() {
+        viewModelScope.launch {
+            try {
+                syncUseCase.syncFromFirestoreToRoom()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
 }
 
 // Factory para el ViewModel
