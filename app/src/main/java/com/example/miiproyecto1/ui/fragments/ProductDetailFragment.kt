@@ -23,6 +23,7 @@ import java.text.NumberFormat
 import java.util.Locale
 import androidx.navigation.fragment.findNavController
 import com.example.miiproyecto1.R
+import com.example.miiproyecto1.data.repository.ProductRepository
 import com.example.miiproyecto1.ui.viewmodel.HomeViewModel
 
 /**
@@ -72,9 +73,11 @@ class ProductDetailFragment : Fragment() {
             return
         }
 
-        // ✅ Inicializar HomeViewModel reutilizando la misma BD
+        // ✅ Inicializar HomeViewModel usando ProductRepository
         val db = AppDatabase.getDatabase(requireContext())
-        homeViewModel = HomeViewModel(db)
+        val repository = ProductRepository(db.productDao())
+        homeViewModel = HomeViewModel(repository)
+
 
         setupToolbar()
         setupListeners()

@@ -41,20 +41,6 @@ class ProductRepository @Inject constructor(
     }
 
     /**
-     * GET TOTAL INVENTORY VALUE FLOW - Obtiene el total del inventario de manera reactiva
-     *
-     * Flow: Se actualiza automáticamente cuando cambian los productos
-     * Uso: En el Widget para mostrar el saldo en tiempo real
-     *
-     * @return Flow<Double?> - Flujo del valor total (o null si no hay productos)
-     */
-    fun getTotalInventoryValueFlow(): Flow<Double?> {
-        return productDao.getTotalInventoryValueFlow()
-    }
-
-    // ==================== OPERACIONES SUSPEND (SINGLE SHOT) ====================
-
-    /**
      * INSERT PRODUCT - Inserta un nuevo producto en la BD
      *
      * suspend: Debe ser llamado desde una Coroutine (viewModelScope.launch)
@@ -65,57 +51,9 @@ class ProductRepository @Inject constructor(
         return productDao.insertProduct(product)
     }
 
-    /**
-     * GET PRODUCT BY ID - Obtiene un producto específico por su ID
-     *
-     * suspend: Operación asincrónica
-     * @param productId: El ID del producto a buscar
-     * @return Product?: El producto encontrado, o null si no existe
-     */
-    suspend fun getProductById(productId: Int): Product? {
-        return productDao.getProductById(productId)
-    }
 
-    /**
-     * UPDATE PRODUCT - Actualiza un producto existente
-     *
-     * suspend: Debe ser llamado desde una Coroutine
-     * IMPORTANTE: El producto debe tener el mismo ID del que será actualizado
-     * @param product: El producto con datos actualizados
-     */
-    suspend fun updateProduct(product: Product) {
-        productDao.updateProduct(product)
-    }
-
-    /**
-     * DELETE PRODUCT - Elimina un producto de la BD
-     *
-     * suspend: Operación asincrónica
-     * @param product: El producto a eliminar
-     */
     suspend fun deleteProduct(product: Product) {
         productDao.deleteProduct(product)
     }
 
-    /**
-     * DELETE PRODUCT BY ID - Elimina un producto usando solo su ID
-     *
-     * suspend: Operación asincrónica
-     * @param productId: El ID del producto a eliminar
-     * @return Int: Número de filas eliminadas (1 si fue exitoso, 0 si no encontró)
-     */
-    suspend fun deleteProductById(productId: Int): Int {
-        return productDao.deleteProductById(productId)
-    }
-
-    /**
-     * GET TOTAL INVENTORY VALUE - Calcula el valor total del inventario
-     *
-     * suspend: Operación asincrónica
-     * Fórmula: SUM(price × cantidad) para todos los productos
-     * @return Double?: Total del inventario, o null si no hay productos
-     */
-    suspend fun getTotalInventoryValue(): Double? {
-        return productDao.getTotalInventoryValue()
-    }
 }
