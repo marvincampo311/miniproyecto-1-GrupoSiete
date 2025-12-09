@@ -59,6 +59,18 @@ android {
 
 dependencies {
 
+    dependencies {
+
+        // ---- UNIT TESTS ----
+        testImplementation(libs.androidx.arch.core.testing)
+        testImplementation(libs.coroutines.test)
+        testImplementation(libs.mockito.core)
+        testImplementation(libs.mockito.kotlin)
+
+    }
+
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
     // Core Android and Jetpack libraries
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
