@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.miiproyecto1.data.local.AppDatabase
 import com.example.miiproyecto1.data.local.Product
+import com.example.miiproyecto1.data.repository.ProductRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AddProductViewModel(
-    private val database: AppDatabase
+    private val repository: ProductRepository
 ) : ViewModel() {
 
     private val _saveSuccess = MutableLiveData<Boolean>()
@@ -36,7 +36,7 @@ class AddProductViewModel(
     fun saveProduct(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                database.productDao().insertProduct(product)
+                repository.insertProduct(product)   // 👈 antes usabas database.productDao()
                 _saveSuccess.postValue(true)
             } catch (e: Exception) {
                 _error.postValue(e.message ?: "Error al guardar")

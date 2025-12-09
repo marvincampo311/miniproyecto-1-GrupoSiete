@@ -12,12 +12,6 @@ import java.text.NumberFormat
 import java.util.Locale
 import com.example.miiproyecto1.data.local.AppDatabase
 
-/**
- * INVENTORY WIDGET PROVIDER - WIDGET DE INVENTARIO
- *
- * Mantiene EXACTAMENTE LA MISMA LÓGICA que el widget original
- * Solo cambia: usa SharedPreferences en lugar de variable estática
- */
 class InventoryWidgetProvider : AppWidgetProvider() {
 
     companion object {
@@ -38,11 +32,7 @@ class InventoryWidgetProvider : AppWidgetProvider() {
         }
     }
 
-    /**
-     * UPDATE APP WIDGET - Actualiza un widget
-     *
-     * ✅ LÓGICA IDÉNTICA AL ORIGINAL
-     */
+
     private fun updateAppWidget(
         context: Context,
         appWidgetManager: AppWidgetManager,
