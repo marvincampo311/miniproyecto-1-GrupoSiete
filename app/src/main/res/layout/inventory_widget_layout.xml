@@ -31,15 +31,15 @@
                 android:layout_height="24dp"
                 android:layout_marginEnd="8dp"
                 android:contentDescription="@string/inventario_logo"
-                android:src="@drawable/baseline_inventory_24" />
+                android:src="@drawable/inventory_widget" />
 
             <!-- Criterio 3: Título -->
             <TextView
                 android:id="@+id/widget_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/inventario_general"
-                android:textColor="@android:color/black"
+                android:text="@string/inventory_text"
+                android:textColor="#FA8523"
                 android:textSize="14sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -79,7 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0.7"
-                android:text="@string/valor_de_inventario"
+                android:text="@string/how_much_inventory"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp" />
 
