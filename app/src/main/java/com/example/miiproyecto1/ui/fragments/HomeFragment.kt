@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.fragment.app.viewModels
+import com.example.miiproyecto1.data.repository.ProductRepository
 
 
 @AndroidEntryPoint
@@ -54,8 +55,8 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val database = AppDatabase.getDatabase(requireContext())
-        val factory = HomeViewModelFactory(database)
-        viewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
+        val repository = ProductRepository(database.productDao())
+        viewModel = HomeViewModel(repository)
 
         setupToolbar()
         setupFab()
@@ -63,6 +64,7 @@ class HomeFragment : Fragment() {
         observeViewModel()
         viewModel.loadProducts()
     }
+
 
     private fun setupToolbar() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)

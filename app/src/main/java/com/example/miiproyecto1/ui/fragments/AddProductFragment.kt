@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.miiproyecto1.R
 import com.example.miiproyecto1.data.local.AppDatabase
 import com.example.miiproyecto1.data.local.Product
+import com.example.miiproyecto1.data.repository.ProductRepository
 import com.example.miiproyecto1.databinding.FragmentAddProductBinding
 import com.example.miiproyecto1.ui.viewmodel.AddProductViewModel
 
@@ -32,9 +33,9 @@ class AddProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // ✅ SIN FACTORY - Directo y simple
         val database = AppDatabase.getDatabase(requireContext())
-        viewModel = AddProductViewModel(database)
+        val repository = ProductRepository(database.productDao())
+        viewModel = AddProductViewModel(repository)
 
         setupValidationWatcher()
         setupSaveButton()
