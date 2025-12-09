@@ -6,31 +6,31 @@ plugins {
 }
 
 android {
-    namespace = "com.example.miiproyecto1" // Application package namespace
-    compileSdk = 36 // Android API level used to compile the app
+    namespace = "com.example.miiproyecto1" // Application package namespace.
+    compileSdk = 36 // Android API level used to compile the app.
 
     defaultConfig {
-        applicationId = "com.example.miiproyecto1" // Unique application ID
-        minSdk = 24 // Minimum supported Android version
-        targetSdk = 36 // Target Android version for compatibility
-        versionCode = 1 // Internal app version
-        versionName = "1.0" // User-facing version name
+        applicationId = "com.example.miiproyecto1" // Unique application ID.
+        minSdk = 24 // Minimum supported Android version.
+        targetSdk = 36 // Target Android version for compatibility.
+        versionCode = 1 // Internal app version.
+        versionName = "1.0" // User-facing version name.
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" // Test runner configuration
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false // Disables code shrinking/obfuscation for release
+            isMinifyEnabled = false // Disables code shrinking/obfuscation for release.
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), // Default ProGuard rules
-                "proguard-rules.pro" // Custom ProGuard rules
+                "proguard-rules.pro" // Custom ProGuard rules.
             )
         }
     }
 
     buildFeatures {
-        viewBinding = true // Enables ViewBinding for safer UI access
+        viewBinding = true // Enables ViewBinding for safer UI access.
     }
 
     buildTypes {
@@ -44,8 +44,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11 // Java language compatibility
-        targetCompatibility = JavaVersion.VERSION_11 // JVM bytecode target version
+        sourceCompatibility = JavaVersion.VERSION_11 // Java language compatibility.
+        targetCompatibility = JavaVersion.VERSION_11 // JVM bytecode target version.
     }
 
     kotlinOptions {
