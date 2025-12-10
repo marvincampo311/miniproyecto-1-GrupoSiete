@@ -36,18 +36,19 @@
         app:boxCornerRadiusBottomStart="6dp"
         app:boxCornerRadiusBottomEnd="6dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/editTextCodigo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:inputType="number"
-        android:maxLength="4"
-        android:textColor="@android:color/white"
-        android:hint="Código producto"
-        android:textColorHint="@android:color/white"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextCodigo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="number"
+                android:maxLength="4"
+                android:textColor="@android:color/white"
+                android:hint="Código producto"
+                android:textColorHint="@android:color/white"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+
+        <com.google.android.material.textfield.TextInputLayout
     android:layout_marginTop="12dp"
     android:layout_width="match_parent"
     android:layout_height="58dp"
@@ -119,9 +120,8 @@
 android:id="@+id/btnGuardar"
 android:layout_width="match_parent"
 android:layout_height="44dp"
-android:layout_marginTop="20dp"
-android:background="@drawable/button_background_orange"
-android:text="Guardar cambios"
+android:layout_marginTop="20dp" android:backgroundTint="@color/inventory_orange"
+android:text="Editar"
 android:textColor="@android:color/white"
 android:textStyle="bold"
 android:enabled="false"

@@ -14,11 +14,13 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/login_dark_gray"
+        app:title="Agregar producto"
         app:titleTextColor="@android:color/white"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:navigationIcon="@drawable/baseline_arrow_back_ios_new_24"/>
 
     <!-- Scroll View para los campos -->
     <ScrollView
@@ -130,14 +132,7 @@
                     android:backgroundTint="@color/inventory_orange"
                     android:text="Guardar" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnCancelar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/login_dark_gray"
-                    android:text="Cancelar" />
+
 
             </LinearLayout>
 
