@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AddProductViewModel(
-    private val repository: ProductRepository
+    private val repository: ProductRepository,
 ) : ViewModel() {
 
     private val _saveSuccess = MutableLiveData<Boolean>()
@@ -36,7 +36,7 @@ class AddProductViewModel(
     fun saveProduct(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                repository.insertProduct(product)   // 👈 antes usabas database.productDao()
+                repository.insertProduct(product)
                 _saveSuccess.postValue(true)
             } catch (e: Exception) {
                 _error.postValue(e.message ?: "Error al guardar")
