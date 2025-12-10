@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/login_dark_gray"
+        app:title="Inventario"
         app:titleTextColor="@android:color/white"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +30,7 @@
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="Volver atrás"
-            android:src="@drawable/baseline_arrow_back_ios_new_24"
+            android:src="@drawable/log_out_item"
             app:tint="@android:color/white" />
 
     </androidx.appcompat.widget.Toolbar>
