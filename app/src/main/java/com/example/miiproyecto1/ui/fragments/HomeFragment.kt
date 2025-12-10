@@ -22,13 +22,12 @@ import com.example.miiproyecto1.data.local.Product
 import com.example.miiproyecto1.databinding.FragmentHomeBinding
 import com.example.miiproyecto1.ui.viewmodel.AuthViewModel
 import com.example.miiproyecto1.ui.viewmodel.HomeViewModel
-import com.example.miiproyecto1.ui.viewmodel.HomeViewModelFactory
+//import com.example.miiproyecto1.ui.viewmodel.HomeViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.fragment.app.viewModels
-import com.example.miiproyecto1.data.repository.ProductRepository
 
 
 @AndroidEntryPoint
@@ -39,8 +38,10 @@ class HomeFragment : Fragment() {
 
 
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel: HomeViewModel by viewModels()
     private lateinit var adapter: ProductAdapter
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,17 +55,22 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val database = AppDatabase.getDatabase(requireContext())
-        val repository = ProductRepository(database.productDao())
-        viewModel = HomeViewModel(repository)
+//        val database = AppDatabase.getDatabase(requireContext())
+//        val factory = HomeViewModelFactory(database)
+//        viewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
 
         setupToolbar()
         setupFab()
         setupRecyclerView()
         observeViewModel()
-        viewModel.loadProducts()
-    }
 
+        viewModel.observeProducts()
+
+        //sincronizacion firebase - room
+
+        viewModel.syncToLocalForWidget()
+
+    }
 
     private fun setupToolbar() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
@@ -94,7 +100,7 @@ class HomeFragment : Fragment() {
 
         adapter.onItemClick = { product ->
             val bundle = Bundle().apply {
-                putInt("extra_product_id", product.id)
+                putString("extra_product_id", product.remoteId)
             }
             findNavController().navigate(
                 R.id.action_homeFragment_to_productDetailFragment,
@@ -139,24 +145,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun deleteProduct(product: Product) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    AppDatabase.getDatabase(requireContext())
-                        .productDao()
-                        .deleteProduct(product)
-                }
-
-                adapter.removeProduct(product)
-                Toast.makeText(requireContext(), "Producto eliminado", Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                Toast.makeText(
-                    requireContext(),
-                    "Error al eliminar: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-                e.printStackTrace()
-            }
+        product.remoteId?.let{ remoteId ->
+            viewModel.deleteProduct(remoteId)
         }
+        Toast.makeText(requireContext(), "Producto eliminado", Toast.LENGTH_SHORT).show()
     }
 }

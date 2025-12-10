@@ -10,6 +10,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import com.example.miiproyecto1.data.repository.FirestoreProductRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.example.miiproyecto1.data.repository.SyncProductsUseCase
+
 
 /**
  * DATABASE MODULE - MÓDULO DE INYECCIÓN DE DEPENDENCIAS (HILT)
@@ -75,5 +80,23 @@ object DatabaseModule {
     @Provides
     fun provideProductRepository(productDao: ProductDao): ProductRepository {
         return ProductRepository(productDao)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirestoreProductRepository(
+        firestore: FirebaseFirestore,
+        auth: FirebaseAuth
+    ): FirestoreProductRepository =
+        FirestoreProductRepository(firestore, auth)
+
+    //sincronizacion firebase -> room
+    @Singleton
+    @Provides
+    fun provideSyncProductsUseCase(
+        appDatabase: AppDatabase,
+        firestoreProductRepository: FirestoreProductRepository
+    ): SyncProductsUseCase {
+        return SyncProductsUseCase(appDatabase, firestoreProductRepository)
     }
 }

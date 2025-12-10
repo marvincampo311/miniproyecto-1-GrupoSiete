@@ -10,26 +10,27 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.example.miiproyecto1.databinding.FragmentEditProductBinding
-import com.example.miiproyecto1.data.local.AppDatabase
+import androidx.fragment.app.viewModels
 import com.example.miiproyecto1.data.local.Product
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.miiproyecto1.databinding.FragmentEditProductBinding
+import com.example.miiproyecto1.ui.viewmodel.EditProductViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class EditProductFragment : Fragment() {
 
     private lateinit var binding: FragmentEditProductBinding
-    private var productId: Int = -1
+    private val viewModel: EditProductViewModel by viewModels()
+
+    private var productRemoteId: String? = null
 
     companion object {
         const val EXTRA_PRODUCT_ID = "extra_product_id"
 
-        fun newInstance(productId: Int): EditProductFragment {
+        fun newInstance(remoteId: String): EditProductFragment {
             return EditProductFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(EXTRA_PRODUCT_ID, productId)
+                    putString(EXTRA_PRODUCT_ID, remoteId)
                 }
             }
         }
@@ -47,9 +48,9 @@ class EditProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        productId = arguments?.getInt(EXTRA_PRODUCT_ID, -1) ?: -1
+        productRemoteId = arguments?.getString(EXTRA_PRODUCT_ID)
 
-        if (productId == -1) {
+        if (productRemoteId.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "Producto no encontrado", Toast.LENGTH_SHORT).show()
             requireActivity().onBackPressed()
             return
@@ -59,7 +60,9 @@ class EditProductFragment : Fragment() {
         setupFilters()
         setupWatcher()
         setupSaveButton()
-        loadProduct()
+        observeViewModel()
+
+        viewModel.loadProduct(productRemoteId!!)
     }
 
     private fun setupToolbar() {
@@ -104,52 +107,49 @@ class EditProductFragment : Fragment() {
         binding.btnGuardar.setOnClickListener {
             val codigo = binding.editTextCodigo.text.toString()
             val nombre = binding.editTextNombre.text.toString()
-            val precio = binding.editTextPrecio.text.toString().toDoubleOrNull() ?: 0.0
-            val cantidad = binding.editTextCantidad.text.toString().toIntOrNull() ?: 0
+            val precioStr = binding.editTextPrecio.text.toString()
+            val cantidadStr = binding.editTextCantidad.text.toString()
+
+            if (!viewModel.validateFields(codigo, nombre, precioStr, cantidadStr)) {
+                Toast.makeText(requireContext(), "Revisa los campos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             val updatedProduct = Product(
-                id = productId,
                 codigo = codigo,
                 name = nombre,
-                price = precio,
-                cantidad = cantidad
+                price = precioStr.toDouble(),
+                cantidad = cantidadStr.toInt(),
+                remoteId = productRemoteId
             )
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                try {
-                    withContext(Dispatchers.IO) {
-                        AppDatabase.getDatabase(requireContext()).productDao().updateProduct(updatedProduct)
-                    }
-
-                    Toast.makeText(requireContext(), "Producto actualizado", Toast.LENGTH_SHORT).show()
-                    requireActivity().onBackPressed()
-                } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Error al guardar: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+            productRemoteId?.let { id ->
+                viewModel.updateProduct(id, updatedProduct)
             }
         }
     }
 
-    private fun loadProduct() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val product = withContext(Dispatchers.IO) {
-                    AppDatabase.getDatabase(requireContext()).productDao().getProductById(productId)
-                }
+    private fun observeViewModel() {
+        viewModel.product.observe(viewLifecycleOwner) { product ->
+            if (product == null) {
+                Toast.makeText(requireContext(), "El producto ya no existe", Toast.LENGTH_SHORT).show()
+                requireActivity().onBackPressed()
+            } else {
+                binding.editTextCodigo.setText(product.codigo)
+                binding.editTextNombre.setText(product.name)
+                binding.editTextPrecio.setText(product.price.toString())
+                binding.editTextCantidad.setText(product.cantidad.toString())
+                binding.btnGuardar.isEnabled = true
+                binding.btnGuardar.alpha = 1f
+            }
+        }
 
-                if (product == null) {
-                    Toast.makeText(requireContext(), "El producto ya no existe", Toast.LENGTH_SHORT).show()
-                    requireActivity().onBackPressed()
-                } else {
-                    binding.editTextCodigo.setText(product.codigo)
-                    binding.editTextNombre.setText(product.name)
-                    binding.editTextPrecio.setText(product.price.toString())
-                    binding.editTextCantidad.setText(product.cantidad.toString())
-                    binding.btnGuardar.isEnabled = true
-                    binding.btnGuardar.alpha = 1f
-                }
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+        viewModel.updateSuccess.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), "Producto actualizado", Toast.LENGTH_SHORT).show()
+                requireActivity().onBackPressed()
+            } else {
+                Toast.makeText(requireContext(), "Error al guardar", Toast.LENGTH_SHORT).show()
             }
         }
     }

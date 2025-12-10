@@ -38,8 +38,8 @@ class AuthViewModel @Inject constructor(
                 .onSuccess {
                     _loginSuccess.value = true
                 }
-                .onFailure { e ->
-                    _error.value = e.message ?: "Error al iniciar sesión"
+                .onFailure {
+                    _error.value =  "Login incorrecto"
                 }
         }
     }
