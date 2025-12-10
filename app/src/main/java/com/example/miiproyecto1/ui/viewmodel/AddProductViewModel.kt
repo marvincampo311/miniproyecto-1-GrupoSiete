@@ -12,11 +12,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import dagger.hilt.android.lifecycle.HiltViewModel
 
-
-
-@HiltViewModel
-class AddProductViewModel @Inject constructor(
-    private val repo: FirestoreProductRepository
+class AddProductViewModel(
+    private val repository: ProductRepository,
 ) : ViewModel() {
 
     private val _saveSuccess = MutableLiveData<Boolean>()
@@ -42,7 +39,7 @@ class AddProductViewModel @Inject constructor(
     fun saveProduct(product: Product) {
         viewModelScope.launch {
             try {
-                repo.insertProduct(product)
+                repository.insertProduct(product)
                 _saveSuccess.postValue(true)
             } catch (e: Exception) {
                 _error.postValue(e.message ?: "Error al guardar")

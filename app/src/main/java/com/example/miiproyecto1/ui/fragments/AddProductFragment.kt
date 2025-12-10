@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.miiproyecto1.R
 import com.example.miiproyecto1.data.local.AppDatabase
 import com.example.miiproyecto1.data.local.Product
 import com.example.miiproyecto1.databinding.FragmentAddProductBinding
@@ -38,9 +37,11 @@ class AddProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // ✅ SIN FACTORY - Directo y simple
-//        val database = AppDatabase.getDatabase(requireContext())
-//        viewModel = AddProductViewModel(database)
+        val database = AppDatabase.getDatabase(requireContext())
+        val repository = ProductRepository(database.productDao())
+
+        // ViewModel sin dispatcher (producción)
+        viewModel = AddProductViewModel(repository)
 
         setupValidationWatcher()
         setupSaveButton()
@@ -69,8 +70,11 @@ class AddProductFragment : Fragment() {
         val precio = binding.editTextPrecio.text.toString().trim()
         val cantidad = binding.editTextCantidad.text.toString().trim()
 
-        binding.btnGuardar.isEnabled = codigo.isNotEmpty() && nombre.isNotEmpty() &&
-                precio.isNotEmpty() && cantidad.isNotEmpty()
+        binding.btnGuardar.isEnabled =
+            codigo.isNotEmpty() &&
+                    nombre.isNotEmpty() &&
+                    precio.isNotEmpty() &&
+                    cantidad.isNotEmpty()
     }
 
     private fun setupSaveButton() {
@@ -80,7 +84,6 @@ class AddProductFragment : Fragment() {
             val precioStr = binding.editTextPrecio.text.toString().trim()
             val cantidadStr = binding.editTextCantidad.text.toString().trim()
 
-            // Validar
             if (!viewModel.validateProduct(codigo, nombre, precioStr, cantidadStr)) {
                 Toast.makeText(requireContext(), "Revisa los campos del formulario", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
