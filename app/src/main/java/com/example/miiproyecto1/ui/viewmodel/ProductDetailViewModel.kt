@@ -11,42 +11,40 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class EditProductViewModel @Inject constructor(
+class ProductDetailViewModel @Inject constructor(
     private val repo: FirestoreProductRepository
 ) : ViewModel() {
 
     private val _product = MutableLiveData<Product?>()
     val product: LiveData<Product?> = _product
 
-    private val _updateSuccess = MutableLiveData<Boolean>()
-    val updateSuccess: LiveData<Boolean> = _updateSuccess
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> = _loading
 
-    fun loadProduct(remoteId: String) {
+    private val _deleteSuccess = MutableLiveData<Boolean>()
+    val deleteSuccess: LiveData<Boolean> = _deleteSuccess
+
+    fun loadProduct(productId: String) {
+        _loading.value = true
         viewModelScope.launch {
             try {
-                val prod = repo.getProductById(remoteId)
-                _product.value = prod
+                val p = repo.getProductById(productId)
+                _product.value = p
             } catch (e: Exception) {
                 _product.value = null
+            } finally {
+                _loading.value = false
             }
         }
     }
 
-    fun validateFields(codigo: String, name: String, price: String, cantidad: String): Boolean {
-        if (codigo.length != 4) return false
-        if (name.isBlank() || price.isBlank() || cantidad.isBlank()) return false
-        if (price.toDoubleOrNull() == null) return false
-        if (cantidad.toIntOrNull() == null) return false
-        return true
-    }
-
-    fun updateProduct(remoteId: String, product: Product) {
+    fun deleteProduct(productId: String) {
         viewModelScope.launch {
             try {
-                repo.updateProduct(remoteId, product)
-                _updateSuccess.value = true
+                repo.deleteProduct(productId)
+                _deleteSuccess.value = true
             } catch (e: Exception) {
-                _updateSuccess.value = false
+                _deleteSuccess.value = false
             }
         }
     }

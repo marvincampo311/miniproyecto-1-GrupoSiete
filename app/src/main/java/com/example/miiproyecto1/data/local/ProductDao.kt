@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import androidx.room.OnConflictStrategy
 
 /**
  * DATA ACCESS OBJECT (DAO) - INTERFAZ PARA ACCESO A BASE DE DATOS
@@ -99,5 +100,14 @@ interface ProductDao {
      */
     @Query("SELECT * FROM products ORDER BY id DESC")
     fun getAllProductsSync(): List<Product>
+
+    // para sincronizar con firestoreee
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertProducts(products: List<Product>)
+
+    @Query("DELETE FROM products")
+    suspend fun deleteAllProducts()
+
+
 
 }
