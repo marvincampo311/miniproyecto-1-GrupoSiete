@@ -9,6 +9,7 @@
     android:background="@android:color/black"
     android:padding="24dp">
 
+    <!-- Logo de la aplicación, centrado arriba -->
     <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="80dp"
@@ -20,6 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Campo Email con estilo Material -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilEmail"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -38,6 +40,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivLogo">
 
+        <!-- Caja de texto para escribir el email -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
@@ -47,6 +50,7 @@
             android:textSize="16sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Campo Password con icono para mostrar/ocultar -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilPassword"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -67,6 +71,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tilEmail">
 
+        <!-- Caja de texto para la contraseña -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
@@ -77,6 +82,7 @@
             android:textSize="16sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Texto de error para contraseña (inicialmente oculto) -->
     <TextView
         android:id="@+id/tvPasswordError"
         android:layout_width="0dp"
@@ -93,6 +99,7 @@
         app:layout_constraintTop_toBottomOf="@id/tilPassword"
         tools:visibility="visible" />
 
+    <!-- Botón de Login -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
@@ -110,6 +117,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPasswordError" />
 
+    <!-- Texto clickeable para ir al registro -->
     <TextView
         android:id="@+id/tvRegister"
         android:layout_width="wrap_content"
