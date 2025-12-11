@@ -26,7 +26,7 @@ class AddProductViewModelTest {
     @Before
     fun setup() {
         kotlinx.coroutines.Dispatchers.setMain(dispatcher)
-        viewModel = AddProductViewModel(repository, dispatcher)   // << INYECTA DISPATCHER
+        viewModel = AddProductViewModel(repository)   // << INYECTA DISPATCHER
     }
 
     @After

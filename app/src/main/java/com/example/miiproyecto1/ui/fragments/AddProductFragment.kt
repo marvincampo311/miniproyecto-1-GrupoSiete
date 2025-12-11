@@ -8,9 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.miiproyecto1.R
-import com.example.miiproyecto1.data.local.AppDatabase
 import com.example.miiproyecto1.data.local.Product
 import com.example.miiproyecto1.databinding.FragmentAddProductBinding
 import com.example.miiproyecto1.ui.viewmodel.AddProductViewModel
@@ -69,8 +68,11 @@ class AddProductFragment : Fragment() {
         val precio = binding.editTextPrecio.text.toString().trim()
         val cantidad = binding.editTextCantidad.text.toString().trim()
 
-        binding.btnGuardar.isEnabled = codigo.isNotEmpty() && nombre.isNotEmpty() &&
-                precio.isNotEmpty() && cantidad.isNotEmpty()
+        binding.btnGuardar.isEnabled =
+            codigo.isNotEmpty() &&
+                    nombre.isNotEmpty() &&
+                    precio.isNotEmpty() &&
+                    cantidad.isNotEmpty()
     }
 
     private fun setupSaveButton() {
@@ -80,20 +82,20 @@ class AddProductFragment : Fragment() {
             val precioStr = binding.editTextPrecio.text.toString().trim()
             val cantidadStr = binding.editTextCantidad.text.toString().trim()
 
-            // Validar
             if (!viewModel.validateProduct(codigo, nombre, precioStr, cantidadStr)) {
-                Toast.makeText(requireContext(), "Revisa los campos del formulario", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Revisa los campos del formulario",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
-
-            val precio = precioStr.toDouble()
-            val cantidad = cantidadStr.toInt()
 
             val product = Product(
                 codigo = codigo,
                 name = nombre,
-                price = precio,
-                cantidad = cantidad
+                price = precioStr.toDouble(),
+                cantidad = cantidadStr.toInt()
             )
 
             viewModel.saveProduct(product)
@@ -115,7 +117,9 @@ class AddProductFragment : Fragment() {
         }
 
         viewModel.error.observe(viewLifecycleOwner) { error ->
-            Toast.makeText(requireContext(), "Error: $error", Toast.LENGTH_SHORT).show()
+            error?.let {
+                Toast.makeText(requireContext(), "Error: $it", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

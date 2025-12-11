@@ -46,7 +46,6 @@ class AddProductViewModel @Inject constructor(
                 _saveSuccess.postValue(true)
             } catch (e: Exception) {
                 _error.postValue(e.message ?: "Error al guardar")
-                e.printStackTrace()
             }
         }
     }
