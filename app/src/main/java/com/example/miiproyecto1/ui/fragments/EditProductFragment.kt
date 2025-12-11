@@ -74,7 +74,7 @@ class EditProductFragment : Fragment() {
     }
 
     private fun setupFilters() {
-        binding.editTextCodigo.filters = arrayOf(InputFilter.LengthFilter(4))
+        binding.tvCodigoDisplay.filters = arrayOf(InputFilter.LengthFilter(4))
         binding.editTextNombre.filters = arrayOf(InputFilter.LengthFilter(40))
         binding.editTextPrecio.filters = arrayOf(InputFilter.LengthFilter(20))
         binding.editTextCantidad.filters = arrayOf(InputFilter.LengthFilter(4))
@@ -83,7 +83,7 @@ class EditProductFragment : Fragment() {
     private fun setupWatcher() {
         val watcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                val codigoOk = binding.editTextCodigo.text?.length == 4
+                val codigoOk = binding.tvCodigoDisplay.text?.length == 4
                 val nombreOk = !binding.editTextNombre.text.isNullOrBlank()
                 val precioOk = !binding.editTextPrecio.text.isNullOrBlank()
                 val cantidadOk = !binding.editTextCantidad.text.isNullOrBlank()
@@ -97,7 +97,7 @@ class EditProductFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         }
 
-        binding.editTextCodigo.addTextChangedListener(watcher)
+        binding.tvCodigoDisplay.addTextChangedListener(watcher)
         binding.editTextNombre.addTextChangedListener(watcher)
         binding.editTextPrecio.addTextChangedListener(watcher)
         binding.editTextCantidad.addTextChangedListener(watcher)
@@ -105,7 +105,7 @@ class EditProductFragment : Fragment() {
 
     private fun setupSaveButton() {
         binding.btnGuardar.setOnClickListener {
-            val codigo = binding.editTextCodigo.text.toString()
+            val codigo = binding.tvCodigoDisplay.text.toString()
             val nombre = binding.editTextNombre.text.toString()
             val precioStr = binding.editTextPrecio.text.toString()
             val cantidadStr = binding.editTextCantidad.text.toString()
@@ -135,7 +135,7 @@ class EditProductFragment : Fragment() {
                 Toast.makeText(requireContext(), "El producto ya no existe", Toast.LENGTH_SHORT).show()
                 requireActivity().onBackPressed()
             } else {
-                binding.editTextCodigo.setText(product.codigo)
+                binding.tvCodigoDisplay.setText(product.codigo)
                 binding.editTextNombre.setText(product.name)
                 binding.editTextPrecio.setText(product.price.toString())
                 binding.editTextCantidad.setText(product.cantidad.toString())

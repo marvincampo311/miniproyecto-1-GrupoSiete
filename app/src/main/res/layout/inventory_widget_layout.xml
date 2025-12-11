@@ -1,136 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Criterio 1: Contenedor principal con fondo negro semitransparente y esquinas redondeadas -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/widget_background"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:baselineAligned="false">
 
-    <!-- CABECERA (Logo, Título, Icono de Ajustes) -->
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_marginEnd="12dp">
+
+        <ImageView
+            android:id="@+id/logo_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/inventario_logo"
+            android:src="@drawable/inventory_widget" />
+
+        <TextView
+            android:id="@+id/widget_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/inventory_text"
+            android:textColor="#FA8523"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="end|center_vertical">
 
-        <!-- Criterio 2: Logo y Título -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
+            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginBottom="4dp">
 
-            <!-- Logo (Criterio 2) -->
-            <ImageView
-                android:id="@+id/logo_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="8dp"
-                android:contentDescription="@string/inventario_logo"
-                android:src="@drawable/inventory_widget" />
-
-            <!-- Criterio 3: Título -->
-            <TextView
-                android:id="@+id/widget_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/inventory_text"
-                android:textColor="#FA8523"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Criterio 12: Icono de Ajustes (Naranja) -->
-        <ImageView
-            android:id="@+id/settings_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:clickable="true"
-            android:contentDescription="@string/ajustes_de_inventario"
-            android:focusable="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_settings" />
-        <!-- Aumentado a 40dp para mejorar el objetivo táctil. -->
-
-    </RelativeLayout>
-
-    <!-- CUERPO CENTRAL (Valor y Alternancia) -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <!-- Criterio 4: Etiqueta del valor -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.7"
+                android:alpha="0.9"
                 android:text="@string/how_much_inventory"
                 android:textColor="#FFFFFF"
-                android:textSize="12sp" />
-
-            <!-- Criterio 8 & 9: Valor (Texto Grande en Naranja) -->
-            <TextView
-                android:id="@+id/inventory_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="$ ****"
-                android:textColor="#FA8523"
-                android:textSize="22sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:layout_marginEnd="8dp"/>
+
+            <ImageView
+                android:id="@+id/toggle_visibility_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:clickable="true"
+                android:contentDescription="@string/alternar_visibilidad_del_inventario"
+                android:src="@drawable/ic_visibility_on" />
         </LinearLayout>
 
-        <!-- Criterio 6, 7, 10: Icono de visibilidad (Ojo) -->
-        <ImageView
-            android:id="@+id/toggle_visibility_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:clickable="true"
-            android:contentDescription="@string/alternar_visibilidad_del_inventario"
-            android:focusable="true"
-            android:src="@drawable/ic_visibility_on" />
-        <!-- Aumentado a 40dp para mejorar el objetivo táctil. -->
+        <TextView
+            android:id="@+id/inventory_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$ ****"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/manage_inventory_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gestionar_inventario"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:layout_marginEnd="8dp"
+                android:clickable="true" />
+
+            <ImageView
+                android:id="@+id/settings_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:clickable="true"
+                android:contentDescription="@string/ajustes_de_inventario"
+                android:src="@drawable/ic_settings"
+                android:scaleType="centerInside"
+                android:tint="#FA8523"/>
+        </LinearLayout>
 
     </LinearLayout>
-
-    <!-- PIE DE PÁGINA (Botón de Gestión) -->
-
-    <!-- Criterio 11: Botón de Gestionar Inventario -->
-    <Button
-        android:id="@+id/manage_inventory_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/button_background_orange"
-        android:clickable="true"
-        android:focusable="true"
-        android:minHeight="40dp"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp"
-        android:text="@string/gestionar_inventario"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        />
-        <!--android:foreground="attr/selectableItemBackground"-->
-
-    <!-- Cambiado a wrap_content y centrado para evitar ser "demasiado ancho". -->
 
 </LinearLayout>

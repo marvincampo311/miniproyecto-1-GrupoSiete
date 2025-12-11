@@ -36,15 +36,15 @@
         app:boxCornerRadiusBottomStart="6dp"
         app:boxCornerRadiusBottomEnd="6dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/editTextCodigo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:inputType="number"
-        android:maxLength="4"
-        android:textColor="@android:color/white"
-        android:hint="Código producto"
-        android:textColorHint="@android:color/white"/>
+            <TextView
+                android:id="@+id/tvCodigoDisplay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Id: --"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:layout_marginBottom="16dp" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
