@@ -119,7 +119,7 @@
     android:layout_marginHorizontal="48dp"
     android:layout_marginTop="32dp"
     android:background="@drawable/button_background_orange"
-    android:enabled="false"
+    android:enabled="true"
     android:text="Eliminar"
     android:textAllCaps="false"
     android:textColor="@android:color/white"

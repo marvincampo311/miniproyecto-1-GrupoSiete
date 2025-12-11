@@ -7,13 +7,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.miiproyecto1.data.local.AppDatabase
 import com.example.miiproyecto1.data.local.Product
-import com.example.miiproyecto1.data.repository.ProductRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import com.example.miiproyecto1.data.repository.FirestoreProductRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import com.example.miiproyecto1.data.repository.SyncProductsUseCase
 
-class HomeViewModel(
-    private val repository: ProductRepository
+
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val repo: FirestoreProductRepository,
+    private val syncUseCase: SyncProductsUseCase
 ) : ViewModel() {
 
     private val _products = MutableLiveData<List<Product>>()
@@ -22,41 +27,45 @@ class HomeViewModel(
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
 
-    fun loadProducts() {
+    fun observeProducts() {
         _loading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                // usamos Flow del repository y tomamos el valor actual
-                val list = repository.getAllProductsFlow()
-                    .first()   // necesitas: import kotlinx.coroutines.flow.first
-                _products.postValue(list)
-            } finally {
-                _loading.postValue(false)
+        viewModelScope.launch {
+            repo.getAllProductsFlow().collect { list ->
+                _products.value = list
+                _loading.value = false
             }
         }
     }
 
-    fun deleteProduct(product: Product) {
-        viewModelScope.launch(Dispatchers.IO) {
+    // ✅ NUEVO: eliminar producto
+    fun deleteProduct(productId: String) {
+        viewModelScope.launch{
+            repo.deleteProduct(productId)
+        }
+
+    }
+
+
+    //sincronizacion firebase->room
+    fun syncToLocalForWidget() {
+        viewModelScope.launch {
             try {
-                repository.deleteProduct(product)
-                val list = repository.getAllProductsFlow().first()
-                _products.postValue(list)
+                syncUseCase.syncFromFirestoreToRoom()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
-}
 
+
+}
 
 // Factory para el ViewModel
-class HomeViewModelFactory(private val database: AppDatabase) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return HomeViewModel(ProductRepository(database.productDao())) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
+//class HomeViewModelFactory(private val database: AppDatabase) : ViewModelProvider.Factory {
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
+//            @Suppress("UNCHECKED_CAST")
+//            return HomeViewModel(database) as T
+//        }
+//        throw IllegalArgumentException("Unknown ViewModel class")
+//    }
