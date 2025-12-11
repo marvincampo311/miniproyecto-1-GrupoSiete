@@ -12,6 +12,8 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.*
 import org.mockito.kotlin.*
+import com.example.miiproyecto1.data.repository.FirestoreProductRepository
+
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddProductViewModelTest {
@@ -20,7 +22,7 @@ class AddProductViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val dispatcher = StandardTestDispatcher()
-    private val repository: ProductRepository = mock()
+    private val repository: FirestoreProductRepository = mock()
     private lateinit var viewModel: AddProductViewModel
 
     @Before
