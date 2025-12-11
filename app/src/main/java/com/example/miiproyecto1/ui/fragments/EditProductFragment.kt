@@ -74,7 +74,7 @@ class EditProductFragment : Fragment() {
     }
 
     private fun setupFilters() {
-        binding.tvCodigoDisplay.filters = arrayOf(InputFilter.LengthFilter(4))
+        binding.tvCodigoDisplay.filters = arrayOf(InputFilter.LengthFilter(10))
         binding.editTextNombre.filters = arrayOf(InputFilter.LengthFilter(40))
         binding.editTextPrecio.filters = arrayOf(InputFilter.LengthFilter(20))
         binding.editTextCantidad.filters = arrayOf(InputFilter.LengthFilter(4))
@@ -83,12 +83,12 @@ class EditProductFragment : Fragment() {
     private fun setupWatcher() {
         val watcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                val codigoOk = binding.tvCodigoDisplay.text?.length == 4
+               // val codigoOk = binding.tvCodigoDisplay.text?.length == 8
                 val nombreOk = !binding.editTextNombre.text.isNullOrBlank()
                 val precioOk = !binding.editTextPrecio.text.isNullOrBlank()
                 val cantidadOk = !binding.editTextCantidad.text.isNullOrBlank()
 
-                val habilitar = codigoOk && nombreOk && precioOk && cantidadOk
+                val habilitar = nombreOk && precioOk && cantidadOk
                 binding.btnGuardar.isEnabled = habilitar
                 binding.btnGuardar.alpha = if (habilitar) 1f else 0.5f
             }
@@ -105,7 +105,7 @@ class EditProductFragment : Fragment() {
 
     private fun setupSaveButton() {
         binding.btnGuardar.setOnClickListener {
-            val codigo = binding.tvCodigoDisplay.text.toString()
+            val codigo = (binding.tvCodigoDisplay.tag as? String) ?: ""
             val nombre = binding.editTextNombre.text.toString()
             val precioStr = binding.editTextPrecio.text.toString()
             val cantidadStr = binding.editTextCantidad.text.toString()
@@ -135,7 +135,9 @@ class EditProductFragment : Fragment() {
                 Toast.makeText(requireContext(), "El producto ya no existe", Toast.LENGTH_SHORT).show()
                 requireActivity().onBackPressed()
             } else {
-                binding.tvCodigoDisplay.setText(product.codigo)
+                binding.tvCodigoDisplay.tag = product.codigo
+
+                binding.tvCodigoDisplay.setText("Id: ${product.codigo}")
                 binding.editTextNombre.setText(product.name)
                 binding.editTextPrecio.setText(product.price.toString())
                 binding.editTextCantidad.setText(product.cantidad.toString())
