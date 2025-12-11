@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFFFFF">
+
+    <!-- Marco en forma de C -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="square"
+        android:strokeLineJoin="miter"
+        android:pathData="
+            M6,4
+            H14
+            M6,4
+            V20
+            M6,20
+            H14
+        " />
+
+    <!-- Línea central de la flecha -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="square"
+        android:pathData="M14,12 H20" />
+
+    <!-- Punta de la flecha -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M18,10 L22,12 L18,14 Z" />
+</vector>

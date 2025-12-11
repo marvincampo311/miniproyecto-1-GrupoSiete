@@ -2,117 +2,155 @@ package com.example.miiproyecto1
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricPrompt
-import androidx.biometric.BiometricManager
-import androidx.core.content.ContextCompat
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import com.example.miiproyecto1.databinding.ActivityMainBinding
+import com.example.miiproyecto1.ui.viewmodel.AuthViewModel
+import com.example.miiproyecto1.utils.SessionManager
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.Executor
+import android.view.View
+import android.graphics.Color
 
-/**
- * Actividad Principal (Ventana Login)
- * Implementa la autenticación biométrica (Huella Dactilar) para acceder a HomeActivity.
- * Criterios HU 2.0: Fondo oscuro, logo, título "Inventory" naranja, huella dinámica.
- */
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var biometricPrompt: BiometricPrompt
-    private lateinit var promptInfo: BiometricPrompt.PromptInfo // NOTA: Esto es correcto
-
-    // Etiqueta para logs
-    private val TAG = "BiometricLogin"
+    private val authViewModel: AuthViewModel by viewModels()
+    private lateinit var binding: ActivityMainBinding  // activity_main.xml = layout del login
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Si ya hay sesión Firebase, ir directo a Home (criterios 10, 14, 16)
+        if (authViewModel.isLoggedIn()) {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+            return
+        }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Asocia el listener de clic al botón de la huella
-        // Se asume que el layout activity_main.xml tiene un ImageView con ID: @id/fingerprint_icon
-        val fingerprintIcon = binding.fingerprintImage
-        fingerprintIcon.setOnClickListener {
-            // Inicia la autenticación cuando se toca el icono de la huella
-            checkBiometricSupportAndAuthenticate()
+        // NO usar toolbar aquí (criterio 1)
+
+        setupTextWatchers()
+        setupObservers()
+        setupClicks()
+    }
+
+    private fun setupTextWatchers() {
+        // Email: máximo 40 caracteres (criterio 3)
+        binding.tilEmail.editText?.addTextChangedListener {
+            val email = it?.toString().orEmpty()
+            if (email.length > 40) {
+                binding.tilEmail.error = "Máximo 40 caracteres"
+            } else {
+                binding.tilEmail.error = null
+            }
+            updateButtonsEnabled()
+        }
+
+        // Password: solo números, entre 6 y 10, validación en tiempo real (criterio 5)
+        binding.tilPassword.editText?.addTextChangedListener { editable ->
+            val pass = editable?.toString().orEmpty()
+
+            // Solo dígitos
+            if (pass.any { !it.isDigit() }) {
+                binding.tilPassword.error = "Solo números"
+            } else {
+                binding.tilPassword.error = null
+            }
+
+            if (pass.length in 1..5) {
+                binding.tvPasswordError.visibility = View.VISIBLE
+                binding.tilPassword.isErrorEnabled = true
+                binding.tilPassword.error = "Mínimo 6 dígitos"
+            } else {
+                binding.tvPasswordError.visibility = View.GONE
+                binding.tilPassword.isErrorEnabled = false
+                binding.tilPassword.error = null
+            }
+
+            // Forzar máximo 10 dígitos
+            if (pass.length > 10) {
+                val trimmed = pass.take(10)
+                binding.etPassword.setText(trimmed)
+                binding.etPassword.setSelection(trimmed.length)
+            }
+
+            updateButtonsEnabled()
         }
     }
 
-    /**
-     * 1. Verifica si el dispositivo soporta biometría y si hay huellas registradas.
-     * 2. Si es compatible, procede con la autenticación.
-     */
-    private fun checkBiometricSupportAndAuthenticate() {
-        val biometricManager = BiometricManager.from(this)
-        val status = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+    // Habilita / deshabilita Login y Registrarse (criterios 7, 8, 11, 12)
+    private fun updateButtonsEnabled() {
+        val email = binding.etEmail.text?.toString().orEmpty()
+        val pass = binding.etPassword.text?.toString().orEmpty()
 
-        when (status) {
-            BiometricManager.BIOMETRIC_SUCCESS -> {
-                Log.d(TAG, "El dispositivo tiene soporte biométrico.")
-                setupBiometricPrompt()
-                biometricPrompt.authenticate(promptInfo)
-            }
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-                Toast.makeText(this, "El dispositivo NO tiene hardware de biometría.", Toast.LENGTH_LONG).show()
-                Log.e(TAG, "BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE")
-            }
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
-                Toast.makeText(this, "El hardware de biometría no está disponible.", Toast.LENGTH_LONG).show()
-                Log.e(TAG, "BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE")
-            }
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                Toast.makeText(this, "No hay huellas dactilares registradas. Por favor, registre una en la configuración.", Toast.LENGTH_LONG).show()
-                Log.e(TAG, "BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED")
-            }
-            else -> {
-                Toast.makeText(this, "Error de soporte biométrico desconocido: $status", Toast.LENGTH_LONG).show()
-                Log.e(TAG, "Error: $status")
-            }
+        val camposLlenos = email.isNotBlank() && pass.isNotBlank()
+        val passwordValida = pass.length in 6..10 && pass.all { it.isDigit() }
+        val habilitar = camposLlenos && passwordValida
+
+        binding.btnLogin.isEnabled = habilitar
+        binding.tvRegister.isEnabled = habilitar
+
+        binding.btnLogin.alpha = if (habilitar) 1f else 0.5f
+        // "Registrarse" gris cuando está inactivo, blanco cuando está activo
+        val colorActivo = resources.getColor(android.R.color.white, theme)
+        val colorInactivo = Color.parseColor("#9EA1A1")
+        binding.tvRegister.setTextColor(if (habilitar) colorActivo else colorInactivo)
+    }
+
+    // Clicks de Login y Registrarse usando AuthViewModel (criterios 9, 10, 13, 14, 17)
+    private fun setupClicks() {
+        binding.btnLogin.setOnClickListener {
+            val email = binding.etEmail.text?.toString().orEmpty()
+            val password = binding.etPassword.text?.toString().orEmpty()
+            authViewModel.login(email, password)
+        }
+
+        binding.tvRegister.setOnClickListener {
+            val email = binding.etEmail.text?.toString().orEmpty()
+            val password = binding.etPassword.text?.toString().orEmpty()
+            authViewModel.register(email, password)
         }
     }
 
-    /**
-     * 2. Configura el BiometricPrompt y el PromptInfo (títulos de la ventana emergente).
-     * Criterio 5: Título, subtítulo y botón Cancelar.
-     */
-    private fun setupBiometricPrompt() {
-        val executor = ContextCompat.getMainExecutor(this)
+    private fun setupObservers() {
+        authViewModel.loading.observe(this) { loading ->
+            binding.btnLogin.isEnabled = !loading
+            binding.tvRegister.isEnabled = !loading
+        }
 
-        biometricPrompt = BiometricPrompt(this, executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                    // Criterio 6: Mostrar mensaje de error si la huella es incorrecta o cancelada
-                    if (errorCode != BiometricPrompt.ERROR_USER_CANCELED && errorCode != BiometricPrompt.ERROR_CANCELED) {
-                        Toast.makeText(applicationContext, "Error de autenticación: $errString", Toast.LENGTH_SHORT).show()
-                    }
-                    Log.d(TAG, "Autenticación fallida: $errString")
+        authViewModel.loginSuccess.observe(this) { success ->
+            if (success == true) {
+                // Tanto login como registro exitoso → ir a Home Inventario (criterios 10, 14, 16)
+                startActivity(Intent(this, HomeActivity::class.java))
+                finish()
+            }
+        }
+
+        authViewModel.error.observe(this) { error ->
+            error?.let { raw ->
+                // Ajustar mensaje según el tipo de error de Firebase (criterios 9 y 13)
+                val lower = raw.lowercase()
+                val msg = when {
+                    // usuario no encontrado o password incorrecta
+                    lower.contains("no user record") ||
+                            lower.contains("password is invalid") ->
+                        "Login incorrecto"
+                    // email ya registrado
+                    lower.contains("already in use") ->
+                        "Error en el registro"
+                    else -> raw
                 }
-
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    super.onAuthenticationSucceeded(result)
-                    Toast.makeText(applicationContext, "¡Autenticación exitosa!", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, "Autenticación exitosa. Navegando a Home.")
-
-                    // Criterio 6: Si la huella es correcta, dirige a HU 3.0 Ventana Home Inventario
-                    val intent = Intent(this@MainActivity, HomeActivity::class.java)
-                    startActivity(intent)
-                    finish() // Cierra la actividad de Login
-                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    Toast.makeText(applicationContext, "Huella no reconocida. Intente de nuevo.", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, "Huella no reconocida.")
-                }
-            })
-
-        // Configuración de la ventana emergente (PromptInfo)
-        promptInfo = BiometricPrompt.PromptInfo.Builder() // ESTA LÍNEA ES CORRECTA
-            .setTitle("Autenticación con Biometría") // Criterio 5: Título
-            .setSubtitle("Ingrese su huella digital") // Criterio 5: Subtítulo
-            .setNegativeButtonText("Cancelar") // Criterio 5: Botón Cancelar
-            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG) // Solo huella/rostro
-            .build()
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }

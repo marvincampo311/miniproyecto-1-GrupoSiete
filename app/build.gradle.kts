@@ -3,6 +3,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt") // Enables Kotlin Annotation Processing
+    id("com.google.dagger.hilt.android")
+    //firebase
+
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -55,6 +59,18 @@ android {
 
 dependencies {
 
+    dependencies {
+
+        // ---- UNIT TESTS ----
+        testImplementation(libs.androidx.arch.core.testing)
+        testImplementation(libs.coroutines.test)
+        testImplementation(libs.mockito.core)
+        testImplementation(libs.mockito.kotlin)
+
+    }
+
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
     // Core Android and Jetpack libraries
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -74,7 +90,21 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0") // Kotlin standard library
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.0") // Kotlin standard library
+
+    // ==================== HILT (INYECCIÓN DE DEPENDENCIAS) ====================
+    // ✅ Core Hilt
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-compiler:2.48")
+    // ✅ Hilt para Navigation
+    implementation("androidx.hilt:hilt-navigation-fragment:1.1.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.6")
+
+    // Source - https://stackoverflow.com/a
+    implementation("androidx.navigation:navigation-compose:2.5.3")
+
+
 
     // Room Database (Persistence)
     implementation("androidx.concurrent:concurrent-futures:1.1.0") // Concurrency utilities
@@ -83,4 +113,14 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.30") // Duplicate (kept as requested)
     implementation("androidx.room:room-runtime:2.6.1") // Room runtime
     kapt("androidx.room:room-compiler:2.6.1") // Room annotation processor
+    implementation("androidx.room:room-ktx:2.6.1") // ✅ AGREGA ESTA LÍNEA
+
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
+    implementation("com.google.firebase:firebase-firestore:26.0.2")
+
 }
