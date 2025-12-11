@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+LinearLayout principal que contiene toda la pantalla.
+- Ocupa todo el ancho y alto.
+- Fondo gris oscuro (#212121).
+- Distribuye los elementos verticalmente.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -6,6 +13,15 @@
     android:background="#212121"
     android:orientation="vertical"
     android:fitsSystemWindows="true">
+
+    <!--
+    Toolbar superior:
+    - Alto de 56dp.
+    - Fondo gris.
+    - Título "Editar producto".
+    - Texto blanco.
+    - Icono de navegación (flecha para volver atrás).
+    -->
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,6 +32,13 @@
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/baseline_arrow_back_ios_new_24" />
 
+    <!--
+   Contenedor de los campos del formulario.
+   - Padding lateral de 24dp.
+   - Padding superior de 20dp.
+   - Organización vertical.
+   - Alineado al centro horizontal.
+   -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,6 +58,12 @@
             android:textSize="20sp"
             android:layout_marginBottom="16dp" />
 
+        <!--
+        Campo: Código del producto.
+        - Caja de texto estilo Material.
+        - Fondo oscuro y borde blanco.
+        - Bordes redondeados.
+        -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_marginTop="12dp"
             android:layout_width="match_parent"
@@ -103,18 +132,26 @@
                 android:textColorHint="@android:color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/btnGuardar"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/button_background_orange"
-            android:text="Guardar cambios"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:enabled="false"
-            android:alpha="0.5"
-            android:letterSpacing="0.05"
-            android:fontFamily="sans-serif-medium" />
+        <!--
+       Botón para guardar los cambios.
+       - Ocupa todo el ancho.
+       - Fondo naranja personalizado.
+       - Texto blanco y en negrita.
+       - Comienza deshabilitado (alpha 0.5).
+       -->
+<Button
+android:id="@+id/btnGuardar"
+android:layout_width="match_parent"
+android:layout_height="44dp"
+android:layout_marginTop="20dp"
+android:background="@drawable/button_background_orange"
+android:text="Guardar cambios"
+android:textColor="@android:color/white"
+android:textStyle="bold"
+android:enabled="false"
+android:alpha="0.5"
+android:letterSpacing="0.05"
+android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
     </LinearLayout>
 </LinearLayout>
