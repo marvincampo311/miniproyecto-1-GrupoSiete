@@ -5,52 +5,45 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Fondo principal -->
-    <path
-        android:fillColor="#121212"
-        android:pathData="M12,12h84v84h-84z" />
+    <group>
+        <path
+            android:fillColor="#1F2428"
+            android:pathData="M18,14h72c4.42,0 8,3.58 8,8v64c0,4.42 -3.58,8 -8,8h-72c-4.42,0 -8,-3.58 -8,-8v-64c0,-4.42 3.58,-8 8,-8z" />
 
-    <!-- Tarjeta central -->
-    <path
-        android:fillColor="#1F2428"
-        android:pathData="M22,26h64v56h-64z" />
+        <path
+            android:fillColor="#FFF96D2E"
+            android:pathData="M18,14h72c4.42,0 8,3.58 8,8v10h-88v-10c0,-4.42 3.58,-8 8,-8z" />
 
-    <!-- Franja superior -->
-    <path
-        android:fillColor="#FFF96D2E"
-        android:pathData="M22,26h64v12h-64z" />
+        <path
+            android:strokeColor="#FFEEEEEE"
+            android:strokeWidth="6"
+            android:strokeLineCap="round"
+            android:pathData="M28,48h28" />
+        <path
+            android:strokeColor="#FFFCA37D"
+            android:strokeWidth="6"
+            android:strokeLineCap="round"
+            android:pathData="M62,48h20" />
 
-    <!-- Líneas de inventario -->
-    <path
-        android:fillColor="#FFEEEEEE"
-        android:pathData="M30,48h24v6h-24z" />
+        <path
+            android:strokeColor="#FFEEEEEE"
+            android:strokeWidth="6"
+            android:strokeLineCap="round"
+            android:pathData="M28,64h36" />
+        <path
+            android:strokeColor="#FFFCA37D"
+            android:strokeWidth="6"
+            android:strokeLineCap="round"
+            android:pathData="M70,64h12" />
 
-    <path
-        android:fillColor="#FFEEEEEE"
-        android:pathData="M30,60h40v6h-40z" />
+        <path
+            android:strokeColor="#FFEEEEEE"
+            android:strokeWidth="6"
+            android:strokeLineCap="round"
+            android:pathData="M28,80h32" />
 
-    <path
-        android:fillColor="#FFEEEEEE"
-        android:pathData="M30,72h34v6h-34z" />
-
-    <!-- Indicadores laterales -->
-    <path
-        android:fillColor="#FFFCA37D"
-        android:pathData="M62,48h24v6h-24z" />
-
-    <path
-        android:fillColor="#FFFCA37D"
-        android:pathData="M70,60h16v6h-16z" />
-
-    <!-- Círculo inferior -->
-    <path
-        android:fillColor="#FFF96D2E"
-        android:pathData="M80,74a8,8 0 1,1 -16,0a8,8 0 1,1 16,0" />
-
-    <!-- Marca interna -->
-    <path
-        android:fillColor="#FF1F2428"
-        android:pathData="M72,74l4,4l8,-8l-2.4,-2.4l-5.6,5.6l-1.6,-1.6z" />
-
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M78.5,77.5 l-4.5,4.5 l-2,-2 l-1.5,1.5 l 3.5,3.5 l 6,-6 z" />
+    </group>
 </vector>
-
