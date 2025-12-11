@@ -4,15 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.miiproyecto1.data.local.AppDatabase
 import com.example.miiproyecto1.data.local.Product
-import com.example.miiproyecto1.data.repository.ProductRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.example.miiproyecto1.data.repository.FirestoreProductRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import dagger.hilt.android.lifecycle.HiltViewModel
+
+
 
 @HiltViewModel
 class AddProductViewModel @Inject constructor(
-    private val repository: ProductRepository
+    private val repo: FirestoreProductRepository
 ) : ViewModel() {
 
     private val _saveSuccess = MutableLiveData<Boolean>()
@@ -38,7 +42,7 @@ class AddProductViewModel @Inject constructor(
     fun saveProduct(product: Product) {
         viewModelScope.launch {
             try {
-                repository.insertProduct(product)
+                repo.insertProduct(product)
                 _saveSuccess.postValue(true)
             } catch (e: Exception) {
                 _error.postValue(e.message ?: "Error al guardar")
